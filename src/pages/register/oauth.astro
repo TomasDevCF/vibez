@@ -2,7 +2,9 @@
 import Layout from "../../layouts/Layout.astro";
 import { getSession } from "auth-astro/server";
 import SignForm from "../../layouts/SignForm.tsx";
-import FormInput from "../../components/FormInput.astro";
+import FormInput from "../../components/FormInput.tsx";
+import { verifySession } from "../oauth.astro";
+import { signOut } from "auth-astro/client";
 const session = await getSession(Astro.request);
 const accountId = Astro.cookies.get("accountId");
 console.log(accountId, "A");
@@ -30,7 +32,7 @@ if (accountId) {
     />
     <FormInput
       disabled={true}
-      value={session.user?.email}
+      value={session.user?.email as string}
       type="email"
       id="email"
       placeholder="Correo electrónico"
@@ -51,7 +53,7 @@ if (accountId) {
       </svg>
     </FormInput>
     <FormInput
-      value={session.user?.name}
+      value={session.user?.name as string}
       type="text"
       id="name"
       placeholder="Nombre"

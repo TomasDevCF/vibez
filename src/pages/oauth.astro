@@ -1,0 +1,41 @@
+---
+import { getSession } from "auth-astro/server";
+import { signOut } from "auth-astro/client";
+import Layout from "../layouts/Layout.astro";
+import type { Session } from "../layouts/SignForm";
+import SessionLoader from "../components/SessionLoader";
+
+export async function verifySession(session: Session | undefined) {
+  if (session) {
+    const res = await fetch(
+      `/api/users/isSessionExist/${session.user?.email}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const data = await res.json();
+    console.log(data);
+    console.log(session);
+    return {
+      isSessionExist: data.isSessionExist,
+      userId: data.userId,
+    };
+  } else {
+    return null;
+  }
+}
+
+const session = await getSession(Astro.request);
+const accountId = Astro.cookies.get("accountId");
+
+if (accountId) {
+  return Astro.redirect("/");
+} else if (!session) {
+  return Astro.redirect("/register");
+}
+---
+
+<Layout title="Cargando tu sesion...">
+  <SessionLoader client:load session={session} />
+</Layout>
