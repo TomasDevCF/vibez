@@ -9,140 +9,160 @@ export default async function seed() {
 			name: "Juan Pérez",
 			image: "https://randomuser.me/api/portraits/men/1.jpg",
 			email: "juan@example.com",
-			created_at: new Date("2023-01-01")
+			created_at: new Date("2023-01-01"),
+			description: "Tengo 38 años y soy un apasionado del fútbol. \nTrabajo como ingeniero civil, construyendo sueños en forma de edificios. \nDisfruto mucho pasar tiempo con mi familia y viajando por el mundo."
 		},
 		{
 			username: "mariagomez1990",
 			name: "María Gómez",
 			image: "https://randomuser.me/api/portraits/women/1.jpg",
 			email: "maria@example.com",
-			created_at: new Date("2023-01-02")
+			created_at: new Date("2023-01-02"),
+			description: "Soy María, tengo 33 años. \nSoy diseñadora gráfica, creando identidades visuales para pequeñas y grandes empresas. \nMe encanta el arte digital y en mi tiempo libre, disfruto pintando."
 		},
 		{
 			username: "pedromartinez1983",
 			name: "Pedro Martínez",
 			image: "https://randomuser.me/api/portraits/men/2.jpg",
 			email: "pedro@example.com",
-			created_at: new Date("2023-01-03")
+			created_at: new Date("2023-01-03"),
+			description: "Me llamo Pedro, y tengo 41 años. \nTrabajo como médico pediatra en un hospital local. \nSoy un ávido lector de novelas de misterio y disfruto de las caminatas al aire libre."
 		},
 		{
 			username: "analopez1988",
 			name: "Ana López",
 			image: "https://randomuser.me/api/portraits/women/2.jpg",
 			email: "ana@example.com",
-			created_at: new Date("2023-01-04")
+			created_at: new Date("2023-01-04"),
+			description: "Tengo 36 años y soy profesora de historia en una secundaria. \nMe apasiona enseñar y compartir conocimientos con mis alumnos. \nEn mi tiempo libre, disfruto leyendo y cocinando recetas nuevas."
 		},
 		{
 			username: "luisrodriguez1982",
 			name: "Luis Rodríguez",
 			image: "https://randomuser.me/api/portraits/men/3.jpg",
 			email: "luis@example.com",
-			created_at: new Date("2023-01-05")
+			created_at: new Date("2023-01-05"),
+			description: "Soy Luis, tengo 42 años. \nTrabajo como programador en una empresa de tecnología. \nMe fascina la tecnología y siempre estoy explorando nuevas herramientas y lenguajes de programación."
 		},
 		{
 			username: "laurafernandez1987",
 			name: "Laura Fernández",
 			image: "https://randomuser.me/api/portraits/women/3.jpg",
 			email: "laura@example.com",
-			created_at: new Date("2023-01-06")
+			created_at: new Date("2023-01-06"),
+			description: "Tengo 37 años y soy fotógrafa profesional. \nMi pasión es capturar momentos especiales en la vida de las personas. \nEn mi tiempo libre, me encanta hacer yoga y viajar."
 		},
 		{
 			username: "javiersanchez1980",
 			name: "Javier Sánchez",
 			image: "https://randomuser.me/api/portraits/men/4.jpg",
 			email: "javier@example.com",
-			created_at: new Date("2023-01-07")
+			created_at: new Date("2023-01-07"),
+			description: "Soy Javier, tengo 44 años. \nTrabajo como abogado especializado en derecho corporativo. \nMe gusta correr maratones y soy un fanático de la música clásica."
 		},
 		{
 			username: "isabeltorres1986",
 			name: "Isabel Torres",
 			image: "https://randomuser.me/api/portraits/women/4.jpg",
 			email: "isabel@example.com",
-			created_at: new Date("2023-01-08")
+			created_at: new Date("2023-01-08"),
+			description: "Tengo 38 años y soy enfermera en un hospital. \nAmo mi trabajo y ayudar a los demás. \nEn mi tiempo libre, disfruto de la jardinería y la lectura de novelas románticas."
 		},
 		{
 			username: "diegoramirez1981",
 			name: "Diego Ramírez",
 			image: "https://randomuser.me/api/portraits/men/5.jpg",
 			email: "diego@example.com",
-			created_at: new Date("2023-01-09")
+			created_at: new Date("2023-01-09"),
+			description: "Soy Diego, tengo 43 años. \nTrabajo como chef en un restaurante gourmet. \nMe encanta experimentar con nuevos sabores y técnicas culinarias."
 		},
 		{
 			username: "carmendiaz1979",
 			name: "Carmen Díaz",
 			image: "https://randomuser.me/api/portraits/women/5.jpg",
 			email: "carmen@example.com",
-			created_at: new Date("2023-01-10")
+			created_at: new Date("2023-01-10"),
+			description: "Tengo 45 años y soy arquitecta. \nMe apasiona diseñar espacios funcionales y estéticos. \nEn mi tiempo libre, disfruto de la pintura y la fotografía de paisajes."
 		},
 		{
 			username: "fernandoherrera1975",
 			name: "Fernando Herrera",
 			image: "https://randomuser.me/api/portraits/men/6.jpg",
 			email: "fernando@example.com",
-			created_at: new Date("2023-01-11")
+			created_at: new Date("2023-01-11"),
+			description: "Me llamo Fernando, tengo 49 años. \nSoy economista y trabajo en un banco internacional. \nDisfruto de la lectura de libros de economía y jugando al ajedrez."
 		},
 		{
 			username: "patriciacastro1984",
 			name: "Patricia Castro",
 			image: "https://randomuser.me/api/portraits/women/6.jpg",
 			email: "patricia@example.com",
-			created_at: new Date("2023-01-12")
+			created_at: new Date("2023-01-12"),
+			description: "Soy Patricia, tengo 40 años. \nTrabajo como publicista en una agencia de marketing. \nMe encanta la creatividad y la innovación en mi trabajo, y disfruto de la pintura en mi tiempo libre."
 		},
 		{
 			username: "raulromero1978",
 			name: "Raúl Romero",
 			image: "https://randomuser.me/api/portraits/men/7.jpg",
 			email: "raul@example.com",
-			created_at: new Date("2023-01-13")
+			created_at: new Date("2023-01-13"),
+			description: "Tengo 46 años y soy músico profesional. \nToco el piano y doy clases particulares. \nLa música es mi vida, y en mi tiempo libre disfruto componiendo nuevas melodías."
 		},
 		{
 			username: "teresaortega1989",
 			name: "Teresa Ortega",
 			image: "https://randomuser.me/api/portraits/women/7.jpg",
 			email: "teresa@example.com",
-			created_at: new Date("2023-01-14")
+			created_at: new Date("2023-01-14"),
+			description: "Soy Teresa, tengo 35 años. \nTrabajo como veterinaria en una clínica. \nAmo los animales y disfruto cuidándolos. En mi tiempo libre, me gusta hacer senderismo."
 		},
 		{
 			username: "albertosilva1983",
 			name: "Alberto Silva",
 			image: "https://randomuser.me/api/portraits/men/8.jpg",
 			email: "alberto@example.com",
-			created_at: new Date("2023-01-15")
+			created_at: new Date("2023-01-15"),
+			description: "Tengo 41 años y soy desarrollador de software. \nMe apasiona la tecnología y crear soluciones innovadoras. \nEn mi tiempo libre, disfruto jugando videojuegos y aprendiendo cosas nuevas."
 		},
 		{
 			username: "monicadelgado1982",
 			name: "Mónica Delgado",
 			image: "https://randomuser.me/api/portraits/women/8.jpg",
 			email: "monica@example.com",
-			created_at: new Date("2023-01-16")
+			created_at: new Date("2023-01-16"),
+			description: "Soy Mónica, tengo 42 años. \nTrabajo como maestra de primaria. \nMe encanta enseñar a los niños y ver cómo crecen y aprenden. En mi tiempo libre, disfruto leyendo y haciendo manualidades."
 		},
 		{
 			username: "sergiomorales1985",
 			name: "Sergio Morales",
 			image: "https://randomuser.me/api/portraits/men/9.jpg",
 			email: "sergio@example.com",
-			created_at: new Date("2023-01-17")
+			created_at: new Date("2023-01-17"),
+			description: "Tengo 39 años y soy diseñador de interiores. \nMe encanta transformar espacios y hacerlos únicos. \nEn mi tiempo libre, disfruto de la fotografía y el cine."
 		},
 		{
 			username: "gloriapena1980",
 			name: "Gloria Peña",
 			image: "https://randomuser.me/api/portraits/women/9.jpg",
 			email: "gloria@example.com",
-			created_at: new Date("2023-01-18")
+			created_at: new Date("2023-01-18"),
+			description: "Soy Gloria, tengo 44 años. \nTrabajo como traductora de inglés y francés. \nMe encanta la literatura y disfruto leyendo libros en su idioma original."
 		},
 		{
 			username: "andresmendez1977",
 			name: "Andrés Méndez",
 			image: "https://randomuser.me/api/portraits/men/10.jpg",
 			email: "andres@example.com",
-			created_at: new Date("2023-01-19")
+			created_at: new Date("2023-01-19"),
+			description: "Tengo 47 años y soy consultor financiero. \nAyudo a las empresas a tomar decisiones estratégicas. \nEn mi tiempo libre, me gusta correr y disfrutar de la naturaleza."
 		},
 		{
 			username: "claudiaaguirre1986",
 			name: "Claudia Aguirre",
 			image: "https://randomuser.me/api/portraits/women/10.jpg",
 			email: "claudia@example.com",
-			created_at: new Date("2023-01-20")
+			created_at: new Date("2023-01-20"),
+			description: "Soy Claudia, tengo 38 años. \nTrabajo como psicóloga en una clínica privada. \nDisfruto ayudando a las personas a superar sus desafíos. En mi tiempo libre, me gusta practicar yoga y leer libros de autoayuda."
 		}
 	]);
 
@@ -727,11 +747,6 @@ export default async function seed() {
 			post_id: 18,
 			user_id: 14,
 			created_at: new Date("2023-10-02")
-		},
-		{
-			post_id: 19,
-			user_id: 10,
-			created_at: new Date("2023-10-03")
 		},
 		{
 			post_id: 20,

@@ -5,9 +5,10 @@ interface Props {
   value?: string
   placeholder: string
   children: React.ReactNode
+  required?: boolean
 }
 
-export default function FormInput({ type, id, disabled, value, placeholder, children }: Props) {
+export default function FormInput({ type, id, disabled, value, placeholder, children, required }: Props) {
   return (
     <div className="relative w-full">
       <div
@@ -16,11 +17,11 @@ export default function FormInput({ type, id, disabled, value, placeholder, chil
         {children}
       </div>
       <input
-        required
+        required={required !== undefined ? required : true}
         type={type}
         id={id}
         readOnly={disabled}
-        value={value}
+        defaultValue={value}
         name={id}
         minLength={id === "name" || id === "username" ? 5 : 0}
         maxLength={id === "name" || id === "username" ? 18 : 100}

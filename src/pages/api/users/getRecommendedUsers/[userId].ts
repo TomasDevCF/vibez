@@ -13,10 +13,10 @@ export const GET: APIRoute = async ({ params, request }) => {
       username: Users.username,
       image: Users.image,
       name: Users.name,
-      follower_count: sql`count(${Follows.follower_id})`.as('follower_count'),
+      follower_count: sql`count(DISTINCT ${Follows.follower_id})`.as('follower_count'),
     })
     .from(Users)
-    .leftJoin(Follows, eq(Users.user_id, Follows.follower_id))
+    .leftJoin(Follows, eq(Users.user_id, Follows.followed_id))
     .where(
       not(
         exists(
@@ -27,6 +27,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     .groupBy(Users.user_id)
     .orderBy(({ follower_count }) => desc(follower_count))
     .limit(8);
+    console.log(userInfo)
 
       if (userInfo.length === 0) {
         return new Response(JSON.stringify({

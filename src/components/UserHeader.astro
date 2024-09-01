@@ -1,0 +1,25 @@
+---
+import ProfileFollowButton from "./ProfileFollowButton";
+import ProfileInfo from "./ProfileInfo";
+
+const { userInfo } = Astro.props;
+console.log(userInfo)
+---
+
+<header class="w-full h-auto border-b border-white/20">
+  <div class="banner w-full h-[200px] bg-white/10"></div>
+  <div class="relative w-full flex flex-col p-4">
+    <div class="profile w-full flex justify-between">
+      <img
+        src={userInfo.image
+          ? userInfo.image
+          : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`}
+        alt={userInfo.name}
+        class="absolute size-32 rounded-full border-4 border-solid border-black -top-16 bg-black object-contain"
+      />
+      <div></div>
+      <ProfileFollowButton userInfo={userInfo} client:load />
+    </div>
+    <ProfileInfo userInfo={userInfo} client:load />
+  </div>
+</header>

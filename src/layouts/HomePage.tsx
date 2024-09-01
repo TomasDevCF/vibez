@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { AsideNav } from "../components/AsideNav";
 import Cookies from "js-cookie"
 import { SearchAside } from "../components/SearchAside";
 
 interface Props {
   children: React.ReactNode;
+  style?: CSSProperties;
 }
 
 export interface UserInfo {
@@ -15,6 +16,7 @@ export interface UserInfo {
   email: string;
   password: string | null;
   created_at: Date;
+  description: string | null
 }
 
 export interface Post {
@@ -25,11 +27,16 @@ export interface Post {
   name: string,
   body: string,
   created_at: Date,
-  followers?: number
+  followers?: number,
+  likes_count: number,
+  comments_count: number,
+  is_comment?: boolean,
+  commented_post_id?: number
 }
 
-export function HomePage({ children }: Props) {
+export function HomePage({ children, style }: Props) {
   const [userInfo, setUserInfo] = useState<null | UserInfo>(null)
+
 
   useEffect(() => {
     fetch(`/api/users/getUser/${Cookies.get("accountId")}`)
@@ -44,14 +51,13 @@ export function HomePage({ children }: Props) {
       .catch(err => console.error(err))
   }, [])
 
+
+
   return (
     <>
       <AsideNav userInfo={userInfo} />
-      <main className="w-full h-full overflow-y-hidden">
-        <div className="page-select flex w-full border-b border-solid border-white/20">
-          <button className="w-1/2 h-16 border-r hover:bg-white/10 transition-colors border-white/20 border-solid text-blue-500 font-medium text-md">Para ti</button>
-          <button className="w-1/2 h-16 border-l hover:bg-white/10 transition-colors border-white/20 border-solid text-white font-medium text-md">Siguiendo</button>
-        </div>
+      <main className="w-full h-full overflow-y-hidden" style={style}>
+
         {children}
       </main>
       <SearchAside userInfo={userInfo} />

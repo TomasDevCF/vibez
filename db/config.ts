@@ -10,7 +10,8 @@ const Users = defineTable({
     image: column.text({optional: true, unique: false}),
     email: column.text({optional: false, unique: true}),
     password: column.text({optional: true}),
-    created_at: column.date({optional: false})
+    created_at: column.date({optional: false}),
+    description: column.text({optional: true})
   }
 })
 

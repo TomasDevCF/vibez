@@ -31,6 +31,18 @@ interface Props {
 }
 
 
+export async function verifyUsername(username: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/users/isUsernameExist/${username}`)
+    const data = await res.json()
+
+    return data.usernameExist
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 export default function SignForm({ action, formType, session, children }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [authData, setAuthData] = useState<AuthData>({ name: "", email: "", password: "", username: "" })
@@ -41,25 +53,29 @@ export default function SignForm({ action, formType, session, children }: Props)
 
     if (action) {
       if (formType === "oauth") {
-        fetch(action + ``, {
-          method: "POST",
-          body: new FormData(e.target as HTMLFormElement)
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data.message)
-            if (data.error) {
-              setMessage(data.message)
-            } else if (data.message === "Usuario creado con éxito") {
-              console.log("Hola")
-              fetch(`/api/users/getUserId/${data.username}`)
-                .then(res => res.json())
-                .then(data => Cookies.set("accountId", data.userId));
-              signOut()
-            } else {
-              setMessage(null)
-            }
+        const body = new FormData(e.target as HTMLFormElement)
+        if (!(await verifyUsername(body.get("username") as string))) {
+          fetch(action + ``, {
+            method: "POST",
+            body: new FormData(e.target as HTMLFormElement)
           })
+            .then(res => res.json())
+            .then(data => {
+              if (data.error) {
+                setMessage(data.message)
+              } else if (data.message === "Usuario creado con éxito") {
+                fetch(`/api/users/getUserId/${data.username}`)
+                  .then(res => res.json())
+                  .then(data => Cookies.set("accountId", data.userId));
+                signOut()
+              } else {
+                setMessage(null)
+              }
+            })
+        } else {
+          setMessage("El nombre de usuario ya esta en uso.")
+        }
+
       }
     }
 
@@ -153,17 +169,17 @@ export default function SignForm({ action, formType, session, children }: Props)
 
       if (session) {
         verifySession(session)
-    .then((sessionData) => {
-      if (sessionData) {
-        if (sessionData.isSessionExist) {
-          Cookies.set("accountId", sessionData.userId);
-          signOut({
-            callbackUrl: "/",
-          });
-        }
-      }
-    })
-    .catch((err) => console.error(err));
+          .then((sessionData) => {
+            if (sessionData) {
+              if (sessionData.isSessionExist) {
+                Cookies.set("accountId", sessionData.userId);
+                signOut({
+                  callbackUrl: "/",
+                });
+              }
+            }
+          })
+          .catch((err) => console.error(err));
       }
     }
 
@@ -200,7 +216,7 @@ export default function SignForm({ action, formType, session, children }: Props)
   }, [authData])
 
   return (
-    <main className="flex justify-center items-center min-h-dvh">
+    <main>
       <form
         onSubmit={handleSubmit}
         className="h-max w-[500px] mx-auto my-0 rounded-lg bg-white/10 py-4"

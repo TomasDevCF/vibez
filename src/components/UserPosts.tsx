@@ -1,25 +1,36 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import type { Post, UserInfo } from "../layouts/HomePage";
-import Cookies from "js-cookie"
+import { useEffect, useState } from "react"
+import type { Post } from "../layouts/HomePage"
+import InfiniteScroll from "react-infinite-scroll-component"
 import CPost from "./Post";
-import PostInput from "./PostInput";
-import InfiniteScroll from "react-infinite-scroll-component";
+import queryString from "query-string";
+interface Props {
+  userId: number
+}
 
-export default function ForYou() {
-  const [page, setPage] = useState<number>(0)
-  const [hasMore, setHasMore] = useState<boolean>(true);
+export default function UserPosts({ userId }: Props) {
   const [posts, setPosts] = useState<Post[]>([])
+  const [page, setPage] = useState<number>(0)
+  const [hasMore, setHasMore] = useState<boolean>(true)
+  const [showQuery, setShowQuery] = useState<string>("")
 
   useEffect(() => {
-    fetch(`/api/posts/forYou/${Cookies.get("accountId")}`)
-      .then(res => res.json())
-      .then(posts => {
-        setPosts(prevPosts => [...prevPosts, ...posts])
-      })
+    const query = queryString.parseUrl(window.location.href)
+    if (query.query.show) {
+      setShowQuery(query.query.show as string)
+    }
+    if (query) {
+      fetch(`/api/posts/${query.query.show == "likes" ? "getLikedPosts" : "getUserPost"}/${userId}`)
+        .then(res => res.json())
+        .then(posts => {
+          if (posts.length === 0) setHasMore(false)
+          setPosts(posts)
+        })
+        .catch(err => console.error(err))
+    }
   }, [])
 
   function handleLoadMore() {
-    fetch(`/api/posts/getUserPost/${Cookies.get("accountId")}?page=${page + 1}`)
+    fetch(`/api/posts/${showQuery == "likes" ? "getLikedPosts" : "getUserPost"}/${userId}?page=${page + 1}`)
       .then(res => res.json())
       .then(posts => {
         if (posts.length === 0) setHasMore(false)
@@ -29,9 +40,8 @@ export default function ForYou() {
   }
 
   return (
-    <div className="for-you h-full relative grid">
-      <PostInput placeholder="¡¿Que esta pasando?!" setPosts={setPosts} />
-      {posts.length != 0 && <div className="infinite-scroll-container w-full overflow-y-auto"
+    <>
+      {posts.length != 0 && <div className="infinite-scroll-container-user w-full overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
         id="infiniteScroll">
         <InfiniteScroll
@@ -56,9 +66,9 @@ export default function ForYou() {
           next={() => handleLoadMore()}
         >
 
-          {posts && posts.map(post => <CPost post={post} />)}
+          {posts && posts.map(post => <CPost post={post} key={post.post_id} />)}
         </InfiniteScroll>
       </div>}
-    </div>
+    </>
   )
 }
