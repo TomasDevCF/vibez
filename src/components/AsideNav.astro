@@ -141,7 +141,9 @@ const { userInfo } = Astro.props;
             Cerrar sesion
           </Logout>
           <UserCard
+            followButton={false}
             client:load
+            userId={userInfo.user_id}
             username={userInfo.username}
             image={userInfo.image}
             name={userInfo.name}

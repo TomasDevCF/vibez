@@ -19,7 +19,7 @@ export default function ForYou() {
   }, [])
 
   function handleLoadMore() {
-    fetch(`/api/posts/getUserPost/${Cookies.get("accountId")}?page=${page + 1}`)
+    fetch(`/api/posts/forYou/${Cookies.get("accountId")}?page=${page + 1}`)
       .then(res => res.json())
       .then(posts => {
         if (posts.length === 0) setHasMore(false)
