@@ -1,5 +1,5 @@
 import Cookies from "js-cookie"
-import type { UserInfo } from "../layouts/HomePage"
+import type { UserInfo } from "../layouts/HomePage.astro"
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react"
 import FormInput from "./FormInput"
 import EditProfileForm from "./EditProfileForm"

@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent } from "react";
-import type { Post } from "../layouts/HomePage";
+import type { Post } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 
 interface Props {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type SetStateAction } from "react";
-import type { Post, UserInfo } from "../layouts/HomePage"
+import type { Post, UserInfo } from "../layouts/HomePage.astro"
 import Cookies from "js-cookie"
 
 interface Props {
@@ -75,7 +75,7 @@ export default function PostInput({ placeholder, setPosts, isCommentInput = fals
   }
 
   return (
-    <div className="add-post border-b border-white/20 border-solid flex justify-between relative top-0 right-0 bg-white/10 backdrop-blur w-full z-20">
+    <div className="add-post border-b border-white/20 border-solid flex justify-between relative top-0 right-0 bg-white/10 backdrop-blur w-full z-20 h-max">
       {userInfo && <form onSubmit={handleSubmit} className="w-full">
         <label htmlFor="addPost" className="mb-2 text-sm font-medium sr-only text-white">Post</label>
         <div className="relative">

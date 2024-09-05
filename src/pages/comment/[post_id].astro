@@ -1,6 +1,6 @@
 ---
 //TODO: pagina de comentarios.
-import { HomePage } from "../../layouts/HomePage";
+import HomePage from "../../layouts/HomePage.astro";
 import Layout from "../../layouts/Layout.astro";
 import Comments from "../../components/Comments";
 
@@ -13,18 +13,7 @@ if (!accountId) {
 ---
 
 <Layout title="Vibez | ¿Que piensas de este post?">
-  <HomePage client:load>
+  <HomePage>
     <Comments client:load post_id={parseInt(post_id as string)} />
   </HomePage>
 </Layout>
-
-<style>
-  body {
-    background-color: rgb(26, 26, 26) !important;
-    display: grid !important;
-    grid-template-areas: "aside-l main aside-r";
-    grid-template-columns: 250px 1fr 250px;
-    max-width: 1024px;
-    place-items: center;
-  }
-</style>

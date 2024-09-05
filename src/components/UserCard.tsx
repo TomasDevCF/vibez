@@ -34,8 +34,10 @@ export default function UserCard({ username, image, name, userId }: Props) {
       })
   }
 
+  console.log(`/user/${userId != undefined ? userId : Cookies.get("accountId")}`)
+
   return (
-    <a href={`/user/${userId ? userId : Cookies.get("accountId")}`} className="flex items-center gap-2 py-2 hover:bg-white/5 transition-colors px-2 rounded-md">
+    <a href={`/user/${Cookies.get("accountId")?.toString()}`} className="flex items-center gap-2 py-2 hover:bg-white/5 transition-colors px-2 rounded-md">
       <div className="flex-shrink-0">
         <img className="w-8 h-8 rounded-full" src={image ? image : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`} alt={name} />
       </div>

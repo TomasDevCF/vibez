@@ -1,11 +1,10 @@
 ---
-import ForYou from "../components/ForYou";
-import Logout from "../components/Logout.tsx";
+import FollowsPage from "../components/FollowsPage.tsx";
 import HomePage from "../layouts/HomePage.astro";
 import Layout from "../layouts/Layout.astro";
 
 const accountId = Astro.cookies.get("accountId");
-console.log(Astro.cookies.get("accountId"));
+
 if (!accountId) {
   return Astro.redirect("/register");
 }
@@ -16,15 +15,15 @@ if (!accountId) {
     <div class="page-select flex w-full border-b border-solid border-white/20">
       <a
         href="/"
-        class="w-1/2 h-16 border-r hover:bg-white/10 transition-colors border-white/20 border-solid text-blue-500 font-medium text-md flex justify-center items-center"
+        class="w-1/2 h-16 border-r hover:bg-white/10 transition-colors border-white/20 border-solid text-white font-medium text-md flex justify-center items-center"
         >Para ti</a
       >
       <a
         href="/follows"
-        class="w-1/2 h-16 border-l hover:bg-white/10 transition-colors border-white/20 border-solid text-white font-medium text-md flex justify-center items-center"
+        class="w-1/2 h-16 border-l hover:bg-white/10 transition-colors border-white/20 border-solid text-blue-500 font-medium text-md flex justify-center items-center"
         >Siguiendo</a
       >
     </div>
-    <ForYou client:load />
+    <FollowsPage client:load />
   </HomePage>
 </Layout>

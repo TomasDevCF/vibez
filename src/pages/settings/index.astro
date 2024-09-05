@@ -1,0 +1,40 @@
+---
+import AsideNav from "../../components/AsideNav.astro";
+import SettingsForm from "../../components/SettingsForm";
+import Layout from "../../layouts/Layout.astro";
+import { db } from "astro:db";
+import { Users } from "astro:db";
+import { eq } from "astro:db";
+
+const accountId = Astro.cookies.get("accountId");
+
+if (!accountId) {
+  return Astro.redirect("/register");
+}
+
+const userInfo = await db
+  .select()
+  .from(Users)
+  .where(eq(Users.user_id, parseInt(accountId.value)));
+
+if (userInfo.length === 0) {
+  Astro.cookies.delete("accountId");
+  return Astro.redirect("/register");
+}
+---
+
+<Layout title="Vibez | Configuracion">
+  <AsideNav userInfo={userInfo[0]} />
+  <SettingsForm userInfo={userInfo[0]} client:load />
+</Layout>
+
+<style is:global>
+  body {
+    background-color: rgb(26, 26, 26) !important;
+    display: grid !important;
+    grid-template-areas: "aside main";
+    grid-template-columns: 250px 1fr;
+    max-width: 1024px;
+    place-items: center;
+  }
+</style>

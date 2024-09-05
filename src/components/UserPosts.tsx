@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { Post } from "../layouts/HomePage"
+import type { Post } from "../layouts/HomePage.astro"
 import InfiniteScroll from "react-infinite-scroll-component"
 import CPost from "./Post";
 import queryString from "query-string";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { UserInfo } from "../layouts/HomePage"
+import type { UserInfo } from "../layouts/HomePage.astro"
 import queryString from "query-string";
 
 interface Props {

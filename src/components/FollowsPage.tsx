@@ -2,19 +2,23 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Post, UserInfo } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 import CPost from "./Post";
-import PostInput from "./PostInput";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default function ForYou() {
+export default function Follows() {
   const [page, setPage] = useState<number>(0)
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [posts, setPosts] = useState<Post[]>([])
+  const [posts, setPosts] = useState<Post[] | null>(null)
 
   useEffect(() => {
-    fetch(`/api/posts/forYou/${Cookies.get("accountId")}`)
+    fetch(`/api/posts/forYouFollowed/${Cookies.get("accountId")}`)
       .then(res => res.json())
       .then(posts => {
-        setPosts(prevPosts => [...prevPosts, ...posts])
+        setPosts(prevPosts => {
+          if (prevPosts) {
+            return [...prevPosts, ...posts]
+          }
+          return posts
+        })
       })
   }, [])
 
@@ -23,15 +27,19 @@ export default function ForYou() {
       .then(res => res.json())
       .then(posts => {
         if (posts.length === 0) setHasMore(false)
-        setPosts(prevPosts => [...prevPosts, ...posts])
+        setPosts(prevPosts => {
+          if (prevPosts) {
+            return [...prevPosts, ...posts]
+          }
+          return posts
+        })
       })
     setPage(prevPage => prevPage + 1)
   }
 
   return (
     <div className="for-you h-full relative grid">
-      <PostInput placeholder="¡¿Que esta pasando?!" setPosts={setPosts} />
-      {posts.length != 0 && <div className="infinite-scroll-container w-full overflow-y-auto"
+      {posts && (posts.length != 0 ? <div className="infinite-scroll-container w-full overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
         id="infiniteScroll">
         <InfiniteScroll
@@ -58,7 +66,12 @@ export default function ForYou() {
 
           {posts && posts.map(post => <CPost post={post} />)}
         </InfiniteScroll>
-      </div>}
+      </div>
+        :
+        <div className="w-full">
+          <p className="text-zinc-400 text-center pt-4 font-medium text-sm">No estas siguiendo a nadie o no han publicado ningun post</p>
+        </div>)
+      }
     </div>
   )
 }

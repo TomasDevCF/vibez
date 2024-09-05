@@ -3,7 +3,7 @@ import { db } from "astro:db";
 import Layout from "../../layouts/Layout.astro";
 import { Users } from "astro:db";
 import { eq } from "astro:db";
-import { HomePage } from "../../layouts/HomePage";
+import HomePage from "../../layouts/HomePage.astro";
 import UserHeader from "../../components/UserHeader.astro";
 import UserPosts from "../../components/UserPosts";
 
@@ -31,24 +31,10 @@ if (userInfo.length === 0) {
 >
   {
     userInfo.length != 0 && (
-      <HomePage
-        style={{ overflowY: "auto", scrollbarWidth: "none" }}
-        client:load
-      >
+      <HomePage className="overflow-y-auto">
         <UserHeader userInfo={userInfo[0]} />
         <UserPosts client:load userId={userInfo[0].user_id} />
       </HomePage>
     )
   }
 </Layout>
-
-<style is:global>
-  body {
-    background-color: rgb(26, 26, 26) !important;
-    display: grid !important;
-    grid-template-areas: "aside-l main aside-r";
-    grid-template-columns: 250px 1fr 250px;
-    max-width: 1024px;
-    place-items: center;
-  }
-</style>

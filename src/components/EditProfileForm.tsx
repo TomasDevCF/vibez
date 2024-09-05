@@ -1,5 +1,5 @@
 import { useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent, type SetStateAction } from "react"
-import type { UserInfo } from "../layouts/HomePage"
+import type { UserInfo } from "../layouts/HomePage.astro"
 import FormInput from "./FormInput"
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 
 export default function EditProfileForm({ editProfileGui, setEditProfileGui, userInfo }: Props) {
   const textareaRef = useRef(null)
-  const [message, setMessage] = useState<string>("")
 
   function postData(formData: FormData) {
     const dataToSend: { [key: string]: string } = {};
@@ -53,33 +52,7 @@ export default function EditProfileForm({ editProfileGui, setEditProfileGui, use
     e.preventDefault()
 
     const formData = new FormData(e.target as HTMLFormElement)
-    if ((formData.get("oldPassword") as string).trim() !== "" && (formData.get("newPassword") as string).trim() !== "") {
-      fetch(`/api/users/getPassword/${userInfo.username}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data.hashPassword) {
-            setMessage("Contraseña incorrecta")
-          } else {
-            fetch(`/api/users/comparePasswords`, {
-              method: "POST",
-              body: JSON.stringify({
-                password: formData.get("oldPassword") as string,
-                hashPassword: data.hashPassword
-              })
-            })
-              .then(res => res.json())
-              .then(data => {
-                formData.delete("oldPassword")
-                if (!data.isSamePassword) {
-                  return setMessage("Contraseña incorrecta")
-                }
-                postData(formData)
-              })
-          }
-        })
-    } else {
-      postData(formData)
-    }
+    postData(formData)
   }
 
   return (
@@ -130,35 +103,6 @@ export default function EditProfileForm({ editProfileGui, setEditProfileGui, use
             </div>
             <textarea onLoadedData={handleInput} defaultValue={userInfo.description || ""} onInput={handleInput} ref={textareaRef} wrap="soft" cols={30} rows={1} id="description" name="description" className="resize-none h-full pe-24 outline-none border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 focus:bg-white/10 bg-white/10 border-white/20 placeholder-gray-400 text-gray-200 focus:outline-none disabled:bg-white/20 disabled:text-gray-400 disabled:placeholder-gray-400 read-only:bg-white/20 read-only:text-gray-400 read-only:placeholder-gray-400 autofill:bg-white/10 max-h-[120px]" placeholder="Biografia/Descripcion" required style={{ scrollbarWidth: "none" }} maxLength={90} />
           </div>
-
-          <FormInput required={false} type="password" id="oldPassword" placeholder="Contraseña">
-            <svg
-              className="w-4 h-4 text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </FormInput>
-          <FormInput required={false} type="password" id="newPassword" placeholder="Nueva contraseña">
-            <svg
-              className="w-4 h-4 text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </FormInput>
           <button
             type="submit"
             className="text-white bg-blue-500 hover:bg-blue-600/90 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center focus:ring-blue-600/55 w-full"
