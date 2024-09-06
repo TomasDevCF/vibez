@@ -82,7 +82,7 @@ export default function PostInput({ placeholder, setPosts, isCommentInput = fals
           <div className="absolute inset-y-0 start-0 flex w-[28px] h-[54px] items-center ps-3 pointer-events-none">
             <img className="rounded-full scale-150" src={userInfo.image ? userInfo.image : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`} alt={userInfo.name} />
           </div>
-          <textarea onInput={handleInput} ref={textareaRef} wrap="soft" rows={1} id="addPost" name="addPost" className="resize-none h-full w-full p-4 ps-10 text-sm border rounded-lg bg-transparent placeholder-gray-400 text-white pe-24 block outline-none border-transparent scrollba" placeholder={placeholder} required style={{ scrollbarWidth: "none" }} />
+          <textarea onInput={handleInput} ref={textareaRef} wrap="soft" rows={1} id="addPost" name="addPost" className="resize-none h-full w-full p-4 ps-10 text-sm border rounded-lg bg-transparent placeholder-gray-400 text-white pe-24 block outline-none border-transparent max-h-64" placeholder={placeholder} required style={{ scrollbarWidth: "none" }} />
           <button type="submit" className=" text-white absolute end-2.5 top-2.5 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 bg-blue-500 hover:bg-blue-600/90 focus:ring-blue-800">Postear</button>
         </div>
       </form>}
