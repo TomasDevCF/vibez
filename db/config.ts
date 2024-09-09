@@ -43,12 +43,20 @@ const Follows = defineTable({
     followed_at: column.date(),
 }})
 
+const Reposts = defineTable({
+  columns: {
+    repost_id: column.number({primaryKey: true, unique: true, optional: false}),
+    user_id_id: column.number({references: () => Users.columns.user_id}),
+    post_id: column.number({references: () => Posts.columns.post_id}),
+}})
+
 export default defineDb({
   tables: {
     Users,
     Posts,
     Likes,
-    Follows
+    Follows,
+    Reposts
   }
 });
 

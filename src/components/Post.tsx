@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useState, type ButtonHTMLAttributes, type MouseEvent } from "react";
 import type { Post } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 
@@ -36,6 +36,7 @@ export default function Post({ post, className }: Props) {
     like_id: null,
     likes_count: 0
   })
+  const [showMenu, setShowMenu] = useState<boolean>(false)
 
   useEffect(() => {
     if (isLiked.isLiked == null) {
@@ -104,9 +105,14 @@ export default function Post({ post, className }: Props) {
     }
   }
 
+  function alternateShowMenu(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
+    e.preventDefault()
+    setShowMenu(!showMenu)
+  }
+
   return (
     <>
-      {isLiked.isLiked !== null && <a href={`/comment/${post.post_id}`} className={`w-full h-max border-b border-solid border-white/20 px-3 flex flex-col hover:bg-white/10 transition-colors ${className}`}>
+      {isLiked.isLiked !== null && <a href={`/comment/${post.post_id}`} className={`w-full h-max border-b border-solid border-white/20 px-3 flex flex-col hover:bg-white/10 transition-colors cursor-default ${className}`}>
         <div className="flex gap-2 py-2 w-full relative">
           <a href={`/user/${post.user_id}`} className="flex-shrink-0">
             <img className="w-8 h-8 rounded-full" src={post.image ? post.image : `https://ui-avatars.com/api/?name=${post.name.charAt(0)}&background=random&bold=true`} alt={post.name} />
@@ -129,9 +135,21 @@ export default function Post({ post, className }: Props) {
               </p>
             </div>
           </div>
-          <svg className="w-6 h-6 cursor-pointer text-white absolute top-0 right-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M6 12h.01m6 0h.01m5.99 0h.01" />
-          </svg>
+          <button className="h-max" type="button" onClick={alternateShowMenu}>
+            <svg className="text-white w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+              <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+            </svg>
+          </button>
+
+          <div className={`${!showMenu && "hidden"} absolute z-10 divide-y rounded-lg shadow w-44 bg-gray-700 divide-gray-600 right-6`}>
+            <ul className="py-2 text-sm text-gray-200">
+              <li>
+                <a href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
+                </svg> Copiar link</a>
+              </li>
+            </ul>
+          </div>
 
         </div>
         <div className="flex gap-6 pb-2 w-full">

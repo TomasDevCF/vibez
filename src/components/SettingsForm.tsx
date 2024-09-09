@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react"
 import type { UserInfo } from "../layouts/HomePage.astro"
 import FormInput from "./FormInput"
 import Cookies from "js-cookie"
@@ -13,7 +13,9 @@ export default function SettingsForm({ userInfo }: Props) {
   const [passwordMessage, setPasswordMessage] = useState<string>("")
   const [buttonMessage, setButtonMessage] = useState<string>("")
   const [confirmGui, setConfirmGui] = useState<boolean>(false)
+  const [fileGui, setFileGui] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [image, setImage] = useState<string>("")
 
   function handleInput(e: FormEvent<HTMLTextAreaElement>) {
     console.log(e)
@@ -51,6 +53,7 @@ export default function SettingsForm({ userInfo }: Props) {
           return window.location.reload()
         }
       })
+      .catch(err => console.error(err))
   }
 
   function handleFormUserData(e: FormEvent<HTMLFormElement>) {
@@ -119,13 +122,6 @@ export default function SettingsForm({ userInfo }: Props) {
     }
   }
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "42px" // eslint
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px` // eslint-disable-line
-    }
-  })
-
   function deleteAccount() {
     setLoading(true)
     fetch('/api/users/deleteAccount', {
@@ -151,10 +147,64 @@ export default function SettingsForm({ userInfo }: Props) {
       })
   }
 
+  function handleFormImage(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.target as HTMLFormElement)
+    const imageFile = formData.get("image") as File
+
+    console.log(imageFile)
+    formData.append("image", imageFile)
+    fetch("https://api.imgbb.com/1/upload?key=6e78ea3a8c7043b01b29f549d7e9ece7&", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        formData.append("image", data.data.url)
+        console.log(data.data.url)
+        console.log(formData.get("image"))
+        if (data.data.url !== userInfo.image) {
+          postData(formData)
+        } else {
+          //TODO ERROR
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        //TODO: ERROR
+      })
+  }
+
+  function handleChangeFile(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          if (event.target && event.target.result) {
+            const blob = new Blob([event.target.result], { type: file.type });
+            const url = URL.createObjectURL(blob);
+            setImage(url)
+          }
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
+    }
+  }
+
   function logout() {
     Cookies.remove("accountId")
     return window.location.href = "/register"
   }
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "42px" // eslint
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px` // eslint-disable-line
+    }
+  })
 
   return (
     <>
@@ -163,11 +213,14 @@ export default function SettingsForm({ userInfo }: Props) {
         <form onSubmit={handleFormUserData} className="flex flex-col pt-4 w-1/2">
           <h2 className="text-xl font-medium pb-2">Datos de usuario</h2>
           <div className="change-image flex gap-2">
-            <img src={userInfo.image ? userInfo.image : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`} className="size-32 rounded-full border-4 border-solid border-black bg-black object-contain" alt={userInfo.name} aria-disabled />
+            <img src={userInfo.image ? userInfo.image : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`} className="size-32 rounded-full border-4 border-solid border-black bg-black object-contain" alt={userInfo.name} />
             <div className="flex flex-col justify-around">
               <p className="text-md font-medium">Foto de perfil</p>
-              <p className="text-md font-medium text-white/30">JPEG, PNG, etc..</p>
-              <button className="rounded-md transition-colors h-[34px] py-1 px-3 font-medium bg-white/30  text-black" disabled>Proximamente</button>
+              <p className="text-md font-medium text-white/50">JPEG, PNG, etc..</p>
+              <button type="button" onClick={() => {
+                setFileGui(true)
+                setConfirmGui(false)
+              }} className="text-white bg-blue-500 hover:bg-blue-600/90 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center focus:ring-blue-600/55 mb-1 mt-2">Cambiar foto de perfil</button>
             </div>
           </div>
           <label htmlFor="name" className="pt-2 m-0 pb-1 block text-sm font-medium text-wihte">Nombre</label>
@@ -272,21 +325,23 @@ export default function SettingsForm({ userInfo }: Props) {
         <div className="flex flex-col pt-4 w-1/2">
           <h2 className="text-xl font-medium pb-2">Acciones de cuenta</h2>
           <div className="flex w-full">
-            <button onClick={() => setConfirmGui(true)} type="button" className="border focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900 w-1/2">Eliminar cuenta</button>
+            <button onClick={() => {
+              setFileGui(false)
+              setConfirmGui(true)
+            }} type="button" className="border focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900 w-1/2">Eliminar cuenta</button>
             <button onClick={logout} type="button" className="border focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-white text-white hover:text-black hover:bg-white focus:ring-zinc-300 w-1/2">Cerrar sesion</button>
           </div>
           <p className="font-medium text-red-600">{buttonMessage}</p>
         </div>
       </main>
 
-      {confirmGui && <div id="popup-modal" tabIndex={-1} className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-full bg-black/40">
+      {confirmGui && <div tabIndex={-1} className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-full bg-black/40">
         <div className="relative p-4 w-full max-w-lg max-h-full">
           <div className="relative rounded-lg shadow bg-gray-700">
-            <button disabled={loading} type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" data-modal-hide="popup-modal">
+            <button disabled={loading} onClick={() => setConfirmGui(false)} type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white" data-modal-hide="popup-modal">
               <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
               </svg>
-              <span className="sr-only">Close modal</span>
             </button>
             <div className="p-4 md:p-5 mb-2 text-center">
               {!loading ? <svg className="mx-auto mb-4 w-12 h-12 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -316,6 +371,39 @@ export default function SettingsForm({ userInfo }: Props) {
           </div>
         </div>
       </div>}
+
+      {fileGui && <form onSubmit={handleFormImage} tabIndex={-1} className="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-full bg-black/40">
+        <div className="bg-gray-700 p-2 gap-y-2 max-w-lg w-full rounded-lg flex flex-col justify-end">
+          <button onClick={() => setFileGui(false)} type="button" className="text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white">
+            <svg className="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+          </button>
+          <div className={`${image && "hidden"} flex items-center justify-center w-full`}>
+            <label htmlFor="image" className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-800 bg-gray-700 border-gray-600 hover:border-gray-500">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg className="w-8 h-8 mb-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                </svg>
+                <p className="mb-2 text-sm text-gray-400"><span className="font-semibold">Click para subir</span> o arrastra y suelta la imagen</p>
+                <p className="text-xs text-gray-400">SVG, PNG or JPG (MAX. 32MB)</p>
+              </div>
+              <input onChange={handleChangeFile} multiple={false} id="image" name="image" type="file" className="hidden" accept=".png, .jpg, .jpeg, .svg" />
+            </label>
+          </div>
+          <div className={`${!image && "hidden"} flex w-full gap-x-2 items-center justify-center`}>
+            <img src={image} alt="Vista previa de foto de perfil" className="w-32 shadow shadow-black/25 rounded-full h-32 object-cover" />
+            <div className="flex flex-col justify-start">
+              <h3 className="font-medium mb-2">¿Quieres usar esta imagen?</h3>
+              <button type="submit" className="text-white bg-blue-500 hover:bg-blue-600/90 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center focus:ring-blue-600/55 w-full">Elegir esta imagen</button>
+              <button type="button" onClick={() => setImage("")} className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 w-full mt-3 text-center justify-center">
+                Elegir otra imagen
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </form>}
     </>
   )
 }
