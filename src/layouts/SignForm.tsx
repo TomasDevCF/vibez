@@ -66,8 +66,11 @@ export default function SignForm({ action, formType, session, children }: Props)
               } else if (data.message === "Usuario creado con éxito") {
                 fetch(`/api/users/getUserId/${data.username}`)
                   .then(res => res.json())
-                  .then(data => Cookies.set("accountId", data.userId));
-                signOut()
+                  .then(data => {
+                    Cookies.set("accountId", data.userId)
+                    signOut()
+                  });
+
               } else {
                 setMessage(null)
               }
@@ -205,8 +208,11 @@ export default function SignForm({ action, formType, session, children }: Props)
           } else if (data.message === "Usuario creado con éxito") {
             fetch(`/api/users/getUserId/${data.username}`)
               .then(res => res.json())
-              .then(data => Cookies.set("accountId", data.userId));
-            window.location.href = "/"
+              .then(data => {
+                Cookies.set("accountId", data.userId)
+                window.location.href = "/"
+              });
+
           } else {
             setMessage(null)
           }
@@ -225,7 +231,7 @@ export default function SignForm({ action, formType, session, children }: Props)
           <img
             src="/images/cutlogo.png"
             alt="logo de vibez"
-            className="w-[50px] h-[50px] rounded-full"
+            className="w-[50px] h-[50px] object-cover"
           />
           <h1 className="text-2xl text-white font-bold">Ingresa en Vibez</h1>
         </div>

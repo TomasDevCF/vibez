@@ -26,6 +26,14 @@ const Posts = defineTable({
   }
 })
 
+const Images = defineTable({
+  columns: {
+    image_id: column.number({primaryKey: true, unique: true, optional: false}),
+    post_id: column.number({references: () => Posts.columns.post_id}),
+    image_url: column.text({optional: false}),
+  }
+})
+
 const Likes = defineTable({
   columns: {
     like_id: column.number({primaryKey: true, unique: true, optional: false}),
@@ -56,7 +64,8 @@ export default defineDb({
     Posts,
     Likes,
     Follows,
-    Reposts
+    Reposts,
+    Images
   }
 });
 

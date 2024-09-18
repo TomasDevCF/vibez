@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 export default function Follows() {
   const [page, setPage] = useState<number>(0)
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [posts, setPosts] = useState<Post[] | null>(null)
+  const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
     fetch(`/api/posts/forYouFollowed/${Cookies.get("accountId")}`)
@@ -64,7 +64,7 @@ export default function Follows() {
           next={() => handleLoadMore()}
         >
 
-          {posts && posts.map(post => <CPost post={post} />)}
+          {posts && posts.map(post => <CPost setPosts={setPosts} post={post} />)}
         </InfiniteScroll>
       </div>
         :

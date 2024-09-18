@@ -161,8 +161,6 @@ export default function SettingsForm({ userInfo }: Props) {
       .then(res => res.json())
       .then(data => {
         formData.append("image", data.data.url)
-        console.log(data.data.url)
-        console.log(formData.get("image"))
         if (data.data.url !== userInfo.image) {
           postData(formData)
         } else {
@@ -213,7 +211,7 @@ export default function SettingsForm({ userInfo }: Props) {
         <form onSubmit={handleFormUserData} className="flex flex-col pt-4 w-1/2">
           <h2 className="text-xl font-medium pb-2">Datos de usuario</h2>
           <div className="change-image flex gap-2">
-            <img src={userInfo.image ? userInfo.image : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`} className="size-32 rounded-full border-4 border-solid border-black bg-black object-contain" alt={userInfo.name} />
+            <img src={userInfo.image ? userInfo.image : `https://ui-avatars.com/api/?name=${userInfo.name.charAt(0)}&background=random&bold=true`} className="size-32 rounded-full border-4 border-solid border-black bg-black object-cover" alt={userInfo.name} />
             <div className="flex flex-col justify-around">
               <p className="text-md font-medium">Foto de perfil</p>
               <p className="text-md font-medium text-white/50">JPEG, PNG, etc..</p>
@@ -392,7 +390,7 @@ export default function SettingsForm({ userInfo }: Props) {
             </label>
           </div>
           <div className={`${!image && "hidden"} flex w-full gap-x-2 items-center justify-center`}>
-            <img src={image} alt="Vista previa de foto de perfil" className="w-32 shadow shadow-black/25 rounded-full h-32 object-cover" />
+            <img src={image} alt="Vista previa de foto de perfil" className="w-32 shadow shadow-black/25 rounded-full h-32 object-cover bg-black" />
             <div className="flex flex-col justify-start">
               <h3 className="font-medium mb-2">¿Quieres usar esta imagen?</h3>
               <button type="submit" className="text-white bg-blue-500 hover:bg-blue-600/90 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center focus:ring-blue-600/55 w-full">Elegir esta imagen</button>

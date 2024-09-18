@@ -8,6 +8,7 @@ import queryString from "query-string";
 import { Likes } from "astro:db";
 import { alias } from "astro:db";
 import { isNull } from "astro:db";
+import { or } from "astro:db";
 
 export const GET: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {
@@ -62,7 +63,7 @@ export const GET: APIRoute = async ({ params, request }) => {
         .from(Likes)
         .where(and(eq(Likes.post_id, Posts.post_id), eq(Likes.user_id, userId)))
       ),
-      isNull(Posts.is_comment)
+      or(eq(Posts.is_comment, false), isNull(Posts.is_comment))
     )
   )
   .groupBy(
@@ -104,7 +105,7 @@ export const GET: APIRoute = async ({ params, request }) => {
             .from(Likes)
             .where(and(eq(Likes.post_id, Posts.post_id), eq(Likes.user_id, userId)))
         ),
-        isNull(Posts.is_comment)
+        or(eq(Posts.is_comment, false), isNull(Posts.is_comment))
       )
     )
     .groupBy(Posts.post_id, Posts.user_id, Users.user_id)
@@ -150,7 +151,7 @@ export const GET: APIRoute = async ({ params, request }) => {
             .from(Likes)
             .where(and(eq(Likes.post_id, Posts.post_id), eq(Likes.user_id, userId)))
         ),
-        isNull(Posts.is_comment)
+        or(eq(Posts.is_comment, false), isNull(Posts.is_comment))
       )
     )
     .groupBy(Posts.post_id, Posts.user_id, Users.user_id) 

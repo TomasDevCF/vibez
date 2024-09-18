@@ -40,7 +40,7 @@ export default function UserCard({ username, image, name, userId, followButton =
   return (
     <a href={`/user/${userId != undefined ? userId : Cookies.get("accountId")}`} className="flex items-center gap-2 py-2 hover:bg-white/5 transition-colors px-2 rounded-md">
       <div className="flex-shrink-0">
-        <img className="w-8 h-8 rounded-full" src={image ? image : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`} alt={name} />
+        <img className="w-8 h-8 rounded-full object-cover bg-black" src={image ? image : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`} alt={name} />
       </div>
       <div className="flex-auto min-w-0">
         <p className="text-sm font-medium truncate text-white">

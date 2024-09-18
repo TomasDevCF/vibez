@@ -1,10 +1,11 @@
-import { useEffect, useState, type ButtonHTMLAttributes, type MouseEvent } from "react";
+import { useEffect, useState, type Dispatch, type MouseEvent, type SetStateAction } from "react";
 import type { Post } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 
 interface Props {
   post: Post
   className?: string
+  setPosts: Dispatch<SetStateAction<Post[]>>
 }
 
 export function hoursSince(date: Date): string {
@@ -30,15 +31,25 @@ export function hoursSince(date: Date): string {
 
 }
 
-export default function Post({ post, className }: Props) {
+export interface ApiImage {
+  image_id: number,
+  post_id: number,
+  image_url: string
+}
+
+export default function Post({ post, className, setPosts }: Props) {
   const [isLiked, setIsLiked] = useState<{ isLiked: null | boolean, like_id: null | number, likes_count: number }>({
     isLiked: null,
     like_id: null,
     likes_count: 0
   })
   const [showMenu, setShowMenu] = useState<boolean>(false)
+  const [showImages, setShowImages] = useState<boolean>(false)
+  const [selectedImage, setSelectedImage] = useState<number>(0)
+  const [images, setImages] = useState<ApiImage[]>([])
 
   useEffect(() => {
+    console.log(post)
     if (isLiked.isLiked == null) {
       fetch("/api/likes/verifyIsLiked", {
         method: "POST",
@@ -53,6 +64,14 @@ export default function Post({ post, className }: Props) {
           console.log(data)
         })
     }
+
+    fetch(`/api/posts/getImages/${post.post_id}`)
+      .then(res => res.json())
+      .then(data => setImages(data))
+      .catch(err => {
+        console.error(err)
+        //TODO: ERROR
+      })
   }, [])
 
   function alternateLike(e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>) {
@@ -110,12 +129,39 @@ export default function Post({ post, className }: Props) {
     setShowMenu(!showMenu)
   }
 
+  function deletePost() {
+    fetch(`/api/posts/delete/${post.post_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPosts(prevPosts => {
+            return prevPosts.filter((value) => value.post_id != post.post_id)
+          })
+          //TODO ALERTA POST BORRADO
+        }
+      })
+  }
+
+  async function copyToClipboard(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      //TODO: alerta de copiado
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <>
       {isLiked.isLiked !== null && <a href={`/comment/${post.post_id}`} className={`w-full h-max border-b border-solid border-white/20 px-3 flex flex-col hover:bg-white/10 transition-colors cursor-default ${className}`}>
         <div className="flex gap-2 py-2 w-full relative">
           <a href={`/user/${post.user_id}`} className="flex-shrink-0">
-            <img className="w-8 h-8 rounded-full" src={post.image ? post.image : `https://ui-avatars.com/api/?name=${post.name.charAt(0)}&background=random&bold=true`} alt={post.name} />
+            <img className="w-8 h-8 rounded-full object-cover bg-black" src={post.image ? post.image : `https://ui-avatars.com/api/?name=${post.name.charAt(0)}&background=random&bold=true`} alt={post.name} />
           </a>
           <div className="flex-auto min-w-0">
             <div className="flex gap-2">
@@ -134,6 +180,13 @@ export default function Post({ post, className }: Props) {
                 {post.body}
               </p>
             </div>
+            <div className="flex flex-wrap">
+              {images.map((img, index) => <img onClick={(e) => {
+                e.preventDefault()
+                setSelectedImage(index)
+                setShowImages(true)
+              }} key={img.image_id} src={img.image_url} className="w-1/2 flex-1 cursor-pointer" />)}
+            </div>
           </div>
           <button className="h-max" type="button" onClick={alternateShowMenu}>
             <svg className="text-white w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
@@ -144,10 +197,22 @@ export default function Post({ post, className }: Props) {
           <div className={`${!showMenu && "hidden"} absolute z-10 divide-y rounded-lg shadow w-44 bg-gray-700 divide-gray-600 right-6`}>
             <ul className="py-2 text-sm text-gray-200">
               <li>
-                <a href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
+                <a onClick={() => copyToClipboard(`http://localhost:4321/user/${post.user_id}`)} href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961" />
                 </svg> Copiar link</a>
               </li>
+              <li>
+                <a href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
+                </svg>
+                  Repostear</a>
+              </li>
+              {Cookies.get("accountId") && post.user_id == parseInt(Cookies.get("accountId") as string) && <li onClick={deletePost}>
+                <a href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                </svg>
+                  Eliminar</a>
+              </li>}
             </ul>
           </div>
 
@@ -160,7 +225,7 @@ export default function Post({ post, className }: Props) {
             {post.comments_count}
           </a>
           <button className="flex gap-1 text-white text-sm items-end relative z-10" >
-            {post.user_id != parseInt(Cookies.get("accountId") as string) && (isLiked.isLiked ?
+            {isLiked.isLiked ?
               <>
                 <svg onClick={alternateLike} className="relative z-10 w-[1.35rem] h-[1.35rem] cursor-pointer font-light hover:text-white transition-colors text-red-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z" />
@@ -173,7 +238,7 @@ export default function Post({ post, className }: Props) {
                 </svg>
                 {isLiked.likes_count}
               </>
-            )}
+            }
 
           </button>
           <svg className="w-[1.35rem] h-[1.35rem] cursor-pointer font-light hover:text-amber-500 transition-colors text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -182,6 +247,27 @@ export default function Post({ post, className }: Props) {
 
         </div>
       </a>}
+      {images && showImages &&
+        <div onClick={() => setShowImages(false)} className="absolute top-0 right-0 bg-black/40 w-full z-50 h-full flex justify-center items-center">
+          <div className="relative flex justify-center items-center gap-4">
+            {selectedImage != 0 && <svg className="w-8 h-8 relative z-[60] bg-white/90 rounded-full p-1 text-black cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" onClick={(e) => {
+              e.stopPropagation()
+              setSelectedImage(selectedImage - 1)
+            }}>
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
+            </svg>}
+
+            <img src={images[selectedImage].image_url} alt={`Imagen numero: ${selectedImage + 1}`} className="w-1/2" />
+            {selectedImage < images.length - 1 && <svg className="w-8 h-8 relative z-[60] bg-white/90 rounded-full p-1 text-black cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" onClick={(e) => {
+              e.stopPropagation()
+              setSelectedImage(selectedImage + 1)
+            }}>
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7" />
+            </svg>}
+
+          </div>
+        </div>
+      }
     </>
   )
 }

@@ -56,7 +56,7 @@ export default function ForYou() {
           next={() => handleLoadMore()}
         >
 
-          {posts && posts.map(post => <CPost post={post} />)}
+          {posts && posts.map(post => <CPost setPosts={setPosts} post={post} key={post.post_id} />)}
         </InfiniteScroll>
       </div>}
     </div>

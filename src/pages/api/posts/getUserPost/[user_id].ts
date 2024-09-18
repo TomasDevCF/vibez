@@ -1,20 +1,18 @@
 import type { APIRoute } from "astro"
-import { Users, and, db, eq, exists, notExists, sql } from "astro:db";
+import { Users, db, eq, sql } from "astro:db";
 import { validateReferer } from "../../users/post";
-import { Follows } from "astro:db";
-import { desc } from "astro:db";
 import { Posts } from "astro:db";
 import queryString from "query-string";
 import { Likes } from "astro:db";
 import { alias } from "astro:db";
-import { isNull } from "astro:db";
+import { desc } from "astro:db";
 
 export const GET: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {
   const userId = parseInt(params.user_id as string)
-  const page = queryString.parse(request.url).page ? parseInt(queryString.parse(request.url).page as string) : 0
+  const page = queryString.parseUrl(request.url).query.page ? parseInt(queryString.parseUrl(request.url).query.page as string) : 0
   const CommentsAlias = alias(Posts, "CommentsAlias")
-
+  console.log(page, queryString.parse(request.url).page)
   const LikesCount = db
   .select({
     post_id: Likes.post_id,
@@ -48,6 +46,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     Posts.post_id,
     Posts.user_id
   )
+  .orderBy(desc(Posts.created_at))
   .limit(10)
   .offset(10 * page)
 

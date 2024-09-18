@@ -30,6 +30,7 @@ export default function UserPosts({ userId }: Props) {
   }, [])
 
   function handleLoadMore() {
+    console.log(`/api/posts/${showQuery == "likes" ? "getLikedPosts" : "getUserPost"}/${userId}?page=${page + 1}`)
     fetch(`/api/posts/${showQuery == "likes" ? "getLikedPosts" : "getUserPost"}/${userId}?page=${page + 1}`)
       .then(res => res.json())
       .then(posts => {
@@ -41,7 +42,7 @@ export default function UserPosts({ userId }: Props) {
 
   return (
     <>
-      {posts.length != 0 && <div className="infinite-scroll-container-user w-full overflow-y-auto"
+      {posts.length != 0 && <div className="infinite-scroll-container w-full overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
         id="infiniteScroll">
         <InfiniteScroll
@@ -65,8 +66,8 @@ export default function UserPosts({ userId }: Props) {
           scrollableTarget="infiniteScroll"
           next={() => handleLoadMore()}
         >
+          {posts && posts.map(post => <CPost setPosts={setPosts} post={post} key={post.post_id} />)}
 
-          {posts && posts.map(post => <CPost post={post} key={post.post_id} />)}
         </InfiniteScroll>
       </div>}
     </>

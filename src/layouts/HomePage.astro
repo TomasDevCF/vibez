@@ -42,8 +42,8 @@ const userInfo = await db
   .select()
   .from(Users)
   .where(eq(Users.user_id, parseInt(accountId.value)));
-console.log(userInfo);
 
+console.log(userInfo);
 if (userInfo.length === 0) {
   Astro.cookies.delete("accountId");
   return Astro.redirect("/register");
