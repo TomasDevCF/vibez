@@ -33,7 +33,7 @@ interface Props {
 
 export async function verifyUsername(username: string): Promise<boolean> {
   try {
-    const res = await fetch(`/api/users/isUsernameExist/${username}`)
+    const res = await fetch(`/api/users/isUsernameExist/${username.toLocaleLowerCase()}`)
     const data = await res.json()
 
     return data.usernameExist
@@ -103,7 +103,7 @@ export default function SignForm({ action, formType, session, children }: Props)
           name: data.get("name") as string,
           email: data.get("email") as string,
           password: data.get("password") as string,
-          username: data.get("username") as string
+          username: (data.get("username") as string).toLocaleLowerCase()
         })
       } else {
         return setMessage("Las contraseñas deben ser iguales")
@@ -112,7 +112,7 @@ export default function SignForm({ action, formType, session, children }: Props)
 
     if (formType === "login") {
       const data = new FormData(e.target as HTMLFormElement)
-      const emailOrUsername = data.get("email_or_username") as string
+      const emailOrUsername = (data.get("email_or_username") as string).toLocaleLowerCase()
       const password = data.get("password") as string
       const isValidEmail = await validateEmail(emailOrUsername)
       if (!isValidEmail && emailOrUsername.includes("@")) {

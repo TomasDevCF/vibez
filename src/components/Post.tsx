@@ -1,5 +1,5 @@
 import { useEffect, useState, type Dispatch, type MouseEvent, type SetStateAction } from "react";
-import type { Post } from "../layouts/HomePage.astro";
+import type { ImageUrl, Post } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 
 interface Props {
@@ -46,7 +46,6 @@ export default function Post({ post, className, setPosts }: Props) {
   const [showMenu, setShowMenu] = useState<boolean>(false)
   const [showImages, setShowImages] = useState<boolean>(false)
   const [selectedImage, setSelectedImage] = useState<number>(0)
-  const [images, setImages] = useState<ApiImage[]>([])
 
   useEffect(() => {
     console.log(post)
@@ -64,14 +63,6 @@ export default function Post({ post, className, setPosts }: Props) {
           console.log(data)
         })
     }
-
-    fetch(`/api/posts/getImages/${post.post_id}`)
-      .then(res => res.json())
-      .then(data => setImages(data))
-      .catch(err => {
-        console.error(err)
-        //TODO: ERROR
-      })
   }, [])
 
   function alternateLike(e: MouseEvent<SVGSVGElement, globalThis.MouseEvent>) {
@@ -176,12 +167,12 @@ export default function Post({ post, className, setPosts }: Props) {
               </p>
             </div>
             <div>
-              <p className="text-sm font-normal text-wrap text-white">
+              <p className="text-sm font-normal text-wrap text-white break-words">
                 {post.body}
               </p>
             </div>
             <div className="flex flex-wrap">
-              {images.map((img, index) => <img onClick={(e) => {
+              {post.images && JSON.parse(post.images).map((img: ImageUrl, index: number) => <img loading="lazy" onClick={(e) => {
                 e.preventDefault()
                 setSelectedImage(index)
                 setShowImages(true)
@@ -247,7 +238,7 @@ export default function Post({ post, className, setPosts }: Props) {
 
         </div>
       </a>}
-      {images && showImages &&
+      {post.images && JSON.parse(post.images) && showImages &&
         <div onClick={() => setShowImages(false)} className="absolute top-0 right-0 bg-black/40 w-full z-50 h-full flex justify-center items-center">
           <div className="relative flex justify-center items-center gap-4">
             {selectedImage != 0 && <svg className="w-8 h-8 relative z-[60] bg-white/90 rounded-full p-1 text-black cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" onClick={(e) => {
@@ -257,8 +248,8 @@ export default function Post({ post, className, setPosts }: Props) {
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
             </svg>}
 
-            <img src={images[selectedImage].image_url} alt={`Imagen numero: ${selectedImage + 1}`} className="w-1/2" />
-            {selectedImage < images.length - 1 && <svg className="w-8 h-8 relative z-[60] bg-white/90 rounded-full p-1 text-black cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" onClick={(e) => {
+            <img src={JSON.parse(post.images)[selectedImage].image_url} alt={`Imagen numero: ${selectedImage + 1}`} className="w-1/2" />
+            {selectedImage < JSON.parse(post.images).length - 1 && <svg className="w-8 h-8 relative z-[60] bg-white/90 rounded-full p-1 text-black cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" onClick={(e) => {
               e.stopPropagation()
               setSelectedImage(selectedImage + 1)
             }}>

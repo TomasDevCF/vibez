@@ -5,6 +5,12 @@ import AsideNav from "../components/AsideNav.astro";
 import { eq } from "astro:db";
 import SearchAside from "../components/SearchAside.astro";
 
+export interface ImageUrl {
+  image_url: string
+  post_id: number
+  image_id: number
+}
+
 export interface UserInfo {
   user_id: number;
   name: string;
@@ -29,6 +35,7 @@ export interface Post {
   comments_count: number;
   is_comment?: boolean;
   commented_post_id?: number;
+  images: string | null;
 }
 
 const accountId = Astro.cookies.get("accountId");

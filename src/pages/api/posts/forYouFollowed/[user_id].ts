@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro"
-import { Users, and, db, eq, exists, notExists, sql } from "astro:db";
+import { Images, Users, and, db, eq, exists, notExists, sql } from "astro:db";
 import { validateReferer } from "../../users/post";
 import { Follows } from "astro:db";
 import { Posts } from "astro:db";
@@ -34,14 +34,21 @@ export const GET: APIRoute = async ({ params, request }) => {
     body: Posts.body,
     created_at: Posts.created_at,
     likes_count: LikesCount.count,
-    comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`
+    comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
+    images: sql<string | null>`
+      CASE 
+        WHEN count(${Images.image_id}) = 0 THEN NULL
+        ELSE json_group_array(
+          json_object('image_id', ${Images.image_id}, 'post_id', ${Images.post_id}, 'image_url', ${Images.image_url})
+        )
+      END
+    `.as('images'),
   })
   .from(Posts)
   .leftJoin(Users, eq(Posts.user_id, Users.user_id))
   .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
-  .leftJoin(CommentsAlias,
-    eq(Posts.post_id, CommentsAlias.commented_post_id)
-  )
+  .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
+  .leftJoin(Images, eq(Posts.post_id, Images.post_id))
   .where(
     and(
       exists(

@@ -29,7 +29,7 @@ export default function ForYou() {
   }
 
   return (
-    <div className="for-you h-full relative grid">
+    <div className="for-you h-full grid">
       <PostInput placeholder="¡¿Que esta pasando?!" setPosts={setPosts} />
       {posts.length != 0 && <div className="infinite-scroll-container w-full overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
@@ -37,22 +37,28 @@ export default function ForYou() {
         <InfiniteScroll
           dataLength={posts.length}
           hasMore={hasMore}
-          loader={<svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 24 24"
-            className="inline w-12 h-12 animate-spin text-white text-center"
-          >
-            <path
-              fill="currentColor"
-              d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"
-            >
-            </path>
-          </svg>}
+          scrollThreshold={"50%"}
+          loader={
+            <div className="flex justify-center items-center w-full py-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                className="inline w-12 h-12 animate-spin text-white text-center"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"
+                >
+                </path>
+              </svg>
+            </div>
+          }
           style={{ scrollbarWidth: "none" }}
           className="overflow-y-hidden"
           scrollableTarget="infiniteScroll"
+
           next={() => handleLoadMore()}
         >
 
