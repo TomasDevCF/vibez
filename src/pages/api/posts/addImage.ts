@@ -1,6 +1,6 @@
-import type { APIRoute } from "astro"
-import { Images, Posts, db } from "astro:db";
-import { validateReferer } from "../users/post";
+import type { APIRoute } from 'astro'
+import { Images, Posts, db } from 'astro:db';
+import { validateReferer } from '../users/post';
 
 export const POST: APIRoute = async ({ request }) => {
   return validateReferer(request, async () => {
@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
   
     if (!image_url || !post_id) {
       return new Response(JSON.stringify({
-        message: "Todos los campos son requeridos",
+        message: 'Todos los campos son requeridos',
         error: 400
       }), {
         status: 400,
@@ -22,7 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
       ]).returning()
 
       return new Response(JSON.stringify({
-        message: "Imagen creada con éxito",
+        message: 'Imagen creada con éxito',
         image: image[0],
         }), {
           status: 201

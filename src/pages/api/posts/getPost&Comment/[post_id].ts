@@ -1,14 +1,14 @@
-import type { APIRoute } from "astro"
-import { Likes, Posts, Users, and, db, eq } from "astro:db";
-import { validateReferer } from "../../users/post";
-import { sql } from "astro:db";
-import { alias } from "astro:db";
-import { Images } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Likes, Posts, Users, and, db, eq } from 'astro:db';
+import { validateReferer } from '../../users/post';
+import { sql } from 'astro:db';
+import { alias } from 'astro:db';
+import { Images } from 'astro:db';
 
 export const GET: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {
     const postId = params.post_id as string
-    const CommentsAlias = alias(Posts, "CommentsAlias")
+    const CommentsAlias = alias(Posts, 'CommentsAlias')
 
     const LikesCount = db
   .select({
@@ -87,7 +87,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 
     if (postInfo.length === 0) {
       return new Response(JSON.stringify({
-        error: "Post no encontrado.",
+        error: 'Post no encontrado.',
       }), {
         status: 404,
       })

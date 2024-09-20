@@ -15,7 +15,7 @@ export default function EditProfileForm({ editProfileGui, setEditProfileGui, use
     const dataToSend: { [key: string]: string } = {};
 
     formData.forEach((value, key) => {
-      if (typeof value === 'string' && value.trim() !== '') { // Verifica que el valor sea string y no esté vacío
+      if (typeof value === "string" && value.trim() !== "") {
         if (key != "description") {
           dataToSend[key] = value.trim();
         } else {

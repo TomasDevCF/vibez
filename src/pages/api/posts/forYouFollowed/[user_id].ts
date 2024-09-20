@@ -1,19 +1,19 @@
-import type { APIRoute } from "astro"
-import { Images, Users, and, db, eq, exists, notExists, sql } from "astro:db";
-import { validateReferer } from "../../users/post";
-import { Follows } from "astro:db";
-import { Posts } from "astro:db";
-import queryString from "query-string";
-import { Likes } from "astro:db";
-import { alias } from "astro:db";
-import { isNull } from "astro:db";
-import { or } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Images, Users, and, db, eq, exists, notExists, sql } from 'astro:db';
+import { validateReferer } from '../../users/post';
+import { Follows } from 'astro:db';
+import { Posts } from 'astro:db';
+import queryString from 'query-string';
+import { Likes } from 'astro:db';
+import { alias } from 'astro:db';
+import { isNull } from 'astro:db';
+import { or } from 'astro:db';
 
 export const GET: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {
   const userId = parseInt(params.user_id as string)
   const page = queryString.parseUrl(request.url).query.page ? parseInt(queryString.parseUrl(request.url).query.page as string) : 0
-  const CommentsAlias = alias(Posts, "CommentsAlias")
+  const CommentsAlias = alias(Posts, 'CommentsAlias')
   console.log(queryString.parseUrl(request.url))
 
   const LikesCount = db

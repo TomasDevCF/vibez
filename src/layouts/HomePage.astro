@@ -6,9 +6,9 @@ import { eq } from "astro:db";
 import SearchAside from "../components/SearchAside.astro";
 
 export interface ImageUrl {
-  image_url: string
-  post_id: number
-  image_id: number
+  image_url: string;
+  post_id: number;
+  image_id: number;
 }
 
 export interface UserInfo {
@@ -70,7 +70,7 @@ if (userInfo.length === 0) {
 
 <style is:global>
   body {
-    background-color: rgb(26, 26, 26) !important;
+    background-color: rgb(8, 7, 7) !important;
     display: grid !important;
     grid-template-areas: "aside-l main aside-r";
     grid-template-columns: 250px 1fr 250px;

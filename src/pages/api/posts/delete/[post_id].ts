@@ -1,6 +1,6 @@
-import type { APIRoute } from "astro"
-import { Images, Likes, Posts, db, eq } from "astro:db";
-import { validateReferer } from "../../users/post";
+import type { APIRoute } from 'astro'
+import { Images, Likes, Posts, db, eq } from 'astro:db';
+import { validateReferer } from '../../users/post';
 
 export const DELETE: APIRoute = async ({ request, params }) => {
   const {post_id} = params

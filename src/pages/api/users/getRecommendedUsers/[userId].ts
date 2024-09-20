@@ -1,9 +1,9 @@
-import type { APIRoute } from "astro"
-import { Users, and, count, db, eq, exists, sql } from "astro:db";
-import { validateReferer } from "../post";
-import { Follows } from "astro:db";
-import { not } from "astro:db";
-import { desc } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Users, and, count, db, eq, exists, sql } from 'astro:db';
+import { validateReferer } from '../post';
+import { Follows } from 'astro:db';
+import { not } from 'astro:db';
+import { desc } from 'astro:db';
 
 export const GET: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {
@@ -31,7 +31,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 
       if (userInfo.length === 0) {
         return new Response(JSON.stringify({
-          error: "Usuarios no encontrados",
+          error: 'Usuarios no encontrados',
         }), {
           status: 404,
         })

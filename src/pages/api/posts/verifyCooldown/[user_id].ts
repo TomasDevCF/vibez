@@ -1,6 +1,6 @@
-import type { APIRoute } from "astro"
-import { Posts, db, desc, eq } from "astro:db";
-import { validateReferer } from "../../users/post";
+import type { APIRoute } from 'astro'
+import { Posts, db, desc, eq } from 'astro:db';
+import { validateReferer } from '../../users/post';
 
 function validateDate(date: Date) {
   const twoMinutes = 2 * 60 * 1000; 

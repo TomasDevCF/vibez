@@ -1,6 +1,6 @@
-import type { APIRoute } from "astro"
-import { Posts, db } from "astro:db";
-import { validateReferer } from "../users/post";
+import type { APIRoute } from 'astro'
+import { Posts, db } from 'astro:db';
+import { validateReferer } from '../users/post';
 
 export const POST: APIRoute = async ({ request }) => {
   return validateReferer(request, async () => {
@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
   
     if (!body || !user_id) {
       return new Response(JSON.stringify({
-        message: "Todos los campos son requeridos",
+        message: 'Todos los campos son requeridos',
         error: 400
       }), {
         status: 400,
@@ -25,7 +25,7 @@ export const POST: APIRoute = async ({ request }) => {
       ]).returning()
       console.log(post)
       return new Response(JSON.stringify({
-        message: "Post creado con éxito",
+        message: 'Post creado con éxito',
         post,
         }), {
           status: 201

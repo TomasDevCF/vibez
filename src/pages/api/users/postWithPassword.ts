@@ -1,8 +1,8 @@
-import type { APIRoute } from "astro"
-import { Users, db } from "astro:db";
-import type { AuthData } from "../../../layouts/SignForm";
-import bcrypt from "bcrypt"
-import { validateReferer } from "./post";
+import type { APIRoute } from 'astro'
+import { Users, db } from 'astro:db';
+import type { AuthData } from '../../../layouts/SignForm';
+import bcrypt from 'bcrypt'
+import { validateReferer } from './post';
 
 export const POST: APIRoute = async ({ request }) => {
   const data: AuthData = await request.json()
@@ -14,7 +14,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!email || !name || !password || !username) {
       console.log(email, name, password, username)
       return new Response(JSON.stringify({
-        message: "Todos los campos son requeridos",
+        message: 'Todos los campos son requeridos',
         error: 400
       }), {
         status: 400,
@@ -31,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
         }
       ])
       return new Response(JSON.stringify({
-        message: "Usuario creado con éxito",
+        message: 'Usuario creado con éxito',
         username,
         }), {
           status: 201

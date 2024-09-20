@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import type { APIRoute } from "astro"
-import { Users, db, eq } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Users, db, eq } from 'astro:db';
 import { validateReferer } from './post';
 
 export const POST: APIRoute = async ({ request }) => {

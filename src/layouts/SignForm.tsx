@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { signOut } from "auth-astro/client";
 import Cookies from "js-cookie"
-import queryString from 'query-string'
+import queryString from "query-string"
 import { validateDate, validateEmail } from "./Layout.astro";
 import CommonAuthForm from "../components/CommonAuthForm";
 import { verifySession } from "../pages/oauth.astro";
@@ -198,7 +198,7 @@ export default function SignForm({ action, formType, session, children }: Props)
     if (authData.password) {
       console.log("Entro")
       fetch(`/api/users/postWithPassword`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(authData)
       })
         .then(res => res.json())

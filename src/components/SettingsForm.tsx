@@ -29,7 +29,7 @@ export default function SettingsForm({ userInfo }: Props) {
     const dataToSend: { [key: string]: string } = {};
 
     formData.forEach((value, key) => {
-      if (typeof value === 'string' && value.trim() !== '') { // Verifica que el valor sea string y no esté vacío
+      if (typeof value === "string" && value.trim() !== "") {
         if (value != userInfo[key as keyof UserInfo]) {
           if (key != "description") {
             dataToSend[key] = value.trim();
@@ -124,10 +124,10 @@ export default function SettingsForm({ userInfo }: Props) {
 
   function deleteAccount() {
     setLoading(true)
-    fetch('/api/users/deleteAccount', {
-      method: 'DELETE',
+    fetch("/api/users/deleteAccount", {
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId: userInfo.user_id

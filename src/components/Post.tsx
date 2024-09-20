@@ -37,6 +37,36 @@ export interface ApiImage {
   image_url: string
 }
 
+export function checkIfLink(text: string): { word: string; isLink: boolean }[] {
+  const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/i;
+
+  const regex = /[^\s\n]+|\n/g;
+
+  const matches = text.match(regex);
+  const result = [];
+
+  if (matches) {
+    for (let i = 0; i < matches.length; i++) {
+      if (matches[i] === "\n") {
+        if (result.length > 0) {
+          result[result.length - 1] += "\n";
+        } else {
+          result.push("\n");
+        }
+      } else {
+        result.push(matches[i]);
+      }
+    }
+  }
+
+  console.log(matches, result)
+
+  return result.map((word) => ({
+    word: word,
+    isLink: urlRegex.test(word),
+  }));
+}
+
 export default function Post({ post, className, setPosts }: Props) {
   const [isLiked, setIsLiked] = useState<{ isLiked: null | boolean, like_id: null | number, likes_count: number }>({
     isLiked: null,
@@ -61,6 +91,9 @@ export default function Post({ post, className, setPosts }: Props) {
         .then(data => {
           setIsLiked({ ...data, likes_count: post.likes_count })
           console.log(data)
+        })
+        .catch(err => {
+          console.error(err)
         })
     }
   }, [])
@@ -156,19 +189,25 @@ export default function Post({ post, className, setPosts }: Props) {
           </a>
           <div className="flex-auto min-w-0">
             <div className="flex gap-2">
-              <a href={`/user/${post.user_id}`} className="text-sm font-medium truncate text-white">
+              <a href={`/user/${post.user_id}`} className="text-sm rubik font-medium truncate text-white">
                 {post.name}
               </a>
-              <a href={`/user/${post.user_id}`} className="text-sm truncate text-gray-400">
+              <a href={`/user/${post.user_id}`} className="text-sm rubik truncate text-gray-400">
                 @{post.username}
               </a>
-              <p className="text-sm truncate text-gray-400">
+              <p className="text-sm rubik truncate text-gray-400">
                 {hoursSince(post.created_at)}
               </p>
             </div>
             <div>
-              <p className="text-sm font-normal text-wrap text-white break-words">
-                {post.body}
+              <p className="text-sm rubik font-light text-wrap text-white break-words">
+                {checkIfLink(post.body).map((text, index) => {
+                  return text.isLink ? (
+                    <a key={index} href={text.word} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">{text.word + `${text.word.includes("\n") ? "" : " "}`}</a>
+                  ) : (
+                    <span key={index}>{text.word + `${text.word.includes("\n") ? "" : " "}`}</span>
+                  )
+                })}
               </p>
             </div>
             <div className="flex flex-wrap">

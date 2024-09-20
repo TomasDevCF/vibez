@@ -1,7 +1,7 @@
-import type { APIRoute } from "astro"
-import { Likes, Users, db, eq } from "astro:db";
-import { validateReferer } from "../users/post";
-import { and } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Likes, Users, db, eq } from 'astro:db';
+import { validateReferer } from '../users/post';
+import { and } from 'astro:db';
 
 export const POST: APIRoute = async ({ params, request }) => {
   return validateReferer(request, async () => {

@@ -43,10 +43,10 @@ export default function UserCard({ username, image, name, userId, followButton =
         <img className="w-8 h-8 rounded-full object-cover bg-black" src={image ? image : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`} alt={name} />
       </div>
       <div className="flex-auto min-w-0">
-        <p className="text-sm font-medium truncate text-white">
+        <p className="text-sm font-medium rubik truncate text-white">
           {name}
         </p>
-        <p className="text-sm truncate text-gray-400">
+        <p className="text-sm truncate rubik text-gray-400">
           @{username}
         </p>
       </div>

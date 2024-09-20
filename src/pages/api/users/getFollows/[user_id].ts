@@ -1,7 +1,7 @@
-import type { APIRoute } from "astro"
-import { Follows, Users, db, eq, sql } from "astro:db";
-import { validateReferer } from "../post";
-import Cookies from "js-cookie"
+import type { APIRoute } from 'astro'
+import { Follows, Users, db, eq, sql } from 'astro:db';
+import { validateReferer } from '../post';
+import Cookies from 'js-cookie'
 
 export const GET: APIRoute = async ({ params, request, redirect }) => {
   return validateReferer(request, async () => {
@@ -19,10 +19,10 @@ export const GET: APIRoute = async ({ params, request, redirect }) => {
     console.log(followsInfo)
 
     if (followsInfo.length === 0) {
-      Cookies.remove("accountId")
-      redirect("/register")
+      Cookies.remove('accountId')
+      redirect('/register')
       return new Response(JSON.stringify({
-        error: "Usuario no encontrado.",
+        error: 'Usuario no encontrado.',
       }), {
         status: 404,
       })

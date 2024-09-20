@@ -1,5 +1,5 @@
-import type { APIRoute } from "astro"
-import { Likes, Posts, Users, db, eq, Follows, and,  } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Likes, Posts, Users, db, eq, Follows, and,  } from 'astro:db';
 
 export function validateReferer(request: Request, next: () => Promise<Response>) {
   const referer = request.headers.get('referer');
@@ -21,7 +21,7 @@ export const DELETE: APIRoute = async ({ request }) => {
     await db.delete(Likes).where(eq(Users.user_id, userId))
 
     return new Response(JSON.stringify({
-      message: "User deleted successfully",
+      message: 'User deleted successfully',
       deletedUserId: deletedUserId[0].userId
     }), { status: 204 })
   })

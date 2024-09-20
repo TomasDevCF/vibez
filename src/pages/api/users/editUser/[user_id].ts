@@ -1,5 +1,5 @@
-import type { APIRoute } from "astro"
-import { Users, db, eq } from "astro:db";
+import type { APIRoute } from 'astro'
+import { Users, db, eq } from 'astro:db';
 
 export function validateReferer(request: Request, next: () => Promise<Response>) {
   const referer = request.headers.get('referer');
