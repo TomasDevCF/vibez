@@ -18,6 +18,7 @@ export const GET: APIRoute = async ({ params, request }) => {
   .from(Likes)
   .groupBy(Likes.post_id)
   .as('LikesCount');
+  const RepostedPost = alias(Posts, "RepostedPost");
 
     const postInfo = await db.select({
       post_id: Posts.post_id,
@@ -29,7 +30,7 @@ export const GET: APIRoute = async ({ params, request }) => {
       created_at: Posts.created_at,
       is_comment: Posts.is_comment,
       commented_post_id: Posts.commented_post_id,
-      likes_count: sql<number>`count(${LikesCount.post_id})`,
+      likes_count: LikesCount.count,
       comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
       images: sql<string | null>`
       CASE 
@@ -39,10 +40,23 @@ export const GET: APIRoute = async ({ params, request }) => {
         )
       END
     `.as('images'),
-  })
-  .from(Posts)
-  .leftJoin(Users, eq(Posts.user_id, Users.user_id))
-  .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
+    is_reposted: sql<boolean>`
+    CASE 
+      WHEN ${Posts.reposted_post_id} IS NOT NULL THEN true 
+      ELSE false 
+    END
+  `.as('is_reposted'),
+  reposted_post_id: sql<string>`
+    CASE
+      WHEN ${RepostedPost.post_id} IS NOT NULL THEN ${RepostedPost.user_id}
+      ELSE null
+    END
+  `.as('reposted_post_id'),
+})
+.from(Posts)
+.leftJoin(Users, eq(Posts.user_id, Users.user_id))
+.leftJoin(RepostedPost, eq(Posts.reposted_post_id, RepostedPost.post_id))
+.leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
   .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
   .leftJoin(Images, eq(Posts.post_id, Images.post_id))
     .where(eq(Posts.post_id, parseInt(postId)))
@@ -61,7 +75,7 @@ export const GET: APIRoute = async ({ params, request }) => {
       created_at: Posts.created_at,
       commented_post_id: Posts.commented_post_id,
       is_comment: Posts.is_comment,
-      likes_count: sql<number>`count(${LikesCount.post_id})`,
+      likes_count: LikesCount.count,
       comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
       images: sql<string | null>`
       CASE 
@@ -71,9 +85,22 @@ export const GET: APIRoute = async ({ params, request }) => {
         )
       END
     `.as('images'),
-  })
-  .from(Posts)
-  .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+    is_reposted: sql<boolean>`
+    CASE 
+      WHEN ${Posts.reposted_post_id} IS NOT NULL THEN true 
+      ELSE false 
+    END
+  `.as('is_reposted'),
+  reposted_post_id: sql<string>`
+    CASE
+      WHEN ${RepostedPost.post_id} IS NOT NULL THEN ${RepostedPost.user_id}
+      ELSE null
+    END
+  `.as('reposted_post_id'),
+})
+.from(Posts)
+.leftJoin(Users, eq(Posts.user_id, Users.user_id))
+.leftJoin(RepostedPost, eq(Posts.reposted_post_id, RepostedPost.post_id))
   .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
   .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
   .leftJoin(Images, eq(Posts.post_id, Images.post_id))

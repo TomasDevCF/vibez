@@ -5,7 +5,7 @@ import Cookies from "js-cookie"
 interface Props {
   post: Post
   className?: string
-  setPosts: Dispatch<SetStateAction<Post[]>>
+  setPosts: Dispatch<SetStateAction<Post[]>>,
 }
 
 export function hoursSince(date: Date): string {
@@ -59,7 +59,6 @@ export function checkIfLink(text: string): { word: string; isLink: boolean }[] {
     }
   }
 
-  console.log(matches, result)
 
   return result.map((word) => ({
     word: word,
@@ -79,22 +78,58 @@ export default function Post({ post, className, setPosts }: Props) {
 
   useEffect(() => {
     console.log(post)
-    if (isLiked.isLiked == null) {
-      fetch("/api/likes/verifyIsLiked", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ post_id: post.post_id, user_id: parseInt(Cookies.get("accountId") as string) })
-      })
+    if (post.is_reposted) {
+      fetch(`/api/posts/getPost&Comment/${post.reposted_post_id}`)
         .then(res => res.json())
         .then(data => {
-          setIsLiked({ ...data, likes_count: post.likes_count })
-          console.log(data)
+          const postInfo: Post = data.postInfo
+          setPosts(prevPosts => {
+            const index = prevPosts.findIndex(item => item.post_id === post.post_id)
+            console.log(prevPosts[index])
+            if (index != -1) {
+              const newPost: Post = {
+                body: postInfo.body,
+                created_at: postInfo.created_at,
+                comments_count: postInfo.comments_count,
+                image: postInfo.image,
+                images: postInfo.images,
+                is_reposted: false,
+                likes_count: postInfo.likes_count,
+                name: postInfo.name,
+                post_id: post.post_id,
+                reposted_post_id: post.reposted_post_id,
+                username: postInfo.username,
+                commented_post_id: postInfo.commented_post_id,
+                user_id: postInfo.user_id,
+                followers: postInfo.followers,
+                is_comment: postInfo.is_comment,
+                original_name: post.name,
+                original_user_id: post.user_id
+              }
+              return [prevPosts[index] = newPost as Post, ...prevPosts]
+            } else {
+              return prevPosts
+            }
+          })
         })
-        .catch(err => {
-          console.error(err)
+    } else {
+      if (isLiked.isLiked == null) {
+        fetch("/api/likes/verifyIsLiked", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ post_id: post.post_id, user_id: parseInt(Cookies.get("accountId") as string) })
         })
+          .then(res => res.json())
+          .then(data => {
+            setIsLiked({ ...data, likes_count: post.likes_count })
+            console.log(data)
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      }
     }
   }, [])
 
@@ -180,11 +215,33 @@ export default function Post({ post, className, setPosts }: Props) {
     }
   }
 
+  function repostPost() {
+    fetch("/api/posts/addPost", {
+      method: "POST",
+      body: JSON.stringify({ body: "repost", user_id: parseInt(Cookies.get("accountId") as string), is_reposted: true, reposted_post_id: post.post_id })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.post) {
+          setPosts(prevPosts => [data.post[0], ...prevPosts])
+        }
+      })
+  }
+
   return (
     <>
       {isLiked.isLiked !== null && <a href={`/comment/${post.post_id}`} className={`w-full h-max border-b border-solid border-white/20 px-3 flex flex-col hover:bg-white/10 transition-colors cursor-default ${className}`}>
+        {post.original_name && post.original_user_id && post.reposted_post_id && <header className="flex pt-1 gap-2 w-full">
+          <p className="text-zinc-300 text-sm flex">
+            <svg className="w-5 h-5 text-zinc-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
+            </svg>
+            <a href={`/user/${post.original_user_id}`}>{`Reposteado por ${post.original_name}`}</a>
+          </p>
+
+        </header>}
         <div className="flex gap-2 py-2 w-full relative">
-          <a href={`/user/${post.user_id}`} className="flex-shrink-0">
+          <a href={`/user/${post.reposted_post_id ? post.reposted_post_id : post.user_id}`} className="flex-shrink-0">
             <img className="w-8 h-8 rounded-full object-cover bg-black" src={post.image ? post.image : `https://ui-avatars.com/api/?name=${post.name.charAt(0)}&background=random&bold=true`} alt={post.name} />
           </a>
           <div className="flex-auto min-w-0">
@@ -232,7 +289,7 @@ export default function Post({ post, className, setPosts }: Props) {
                 </svg> Copiar link</a>
               </li>
               <li>
-                <a href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <a onClick={repostPost} href="#" className="flex gap-2 px-4 py-2 hover:bg-gray-600 hover:text-white"><svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3" />
                 </svg>
                   Repostear</a>

@@ -23,6 +23,7 @@ export default function UserPosts({ userId }: Props) {
         .then(res => res.json())
         .then(posts => {
           if (posts.length === 0) setHasMore(false)
+          console.log(posts)
           setPosts(posts)
         })
         .catch(err => console.error(err))

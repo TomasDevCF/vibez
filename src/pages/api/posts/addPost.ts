@@ -4,7 +4,7 @@ import { validateReferer } from '../users/post';
 
 export const POST: APIRoute = async ({ request }) => {
   return validateReferer(request, async () => {
-    const {body, user_id, commented_post_id} = await request.json()
+    const {body, user_id, commented_post_id, is_reposted, reposted_post_id} = await request.json()
   
     if (!body || !user_id) {
       return new Response(JSON.stringify({
@@ -20,7 +20,9 @@ export const POST: APIRoute = async ({ request }) => {
           created_at: new Date(),
           user_id,
           commented_post_id: commented_post_id ? commented_post_id : null,
-          is_comment: commented_post_id ? true : false
+          is_comment: commented_post_id ? true : false,
+          is_reposted: is_reposted ? is_reposted : null,
+          reposted_post_id: reposted_post_id ? reposted_post_id : null
         }
       ]).returning()
       console.log(post)

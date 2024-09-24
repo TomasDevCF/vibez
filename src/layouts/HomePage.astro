@@ -36,6 +36,10 @@ export interface Post {
   is_comment?: boolean;
   commented_post_id?: number;
   images: string | null;
+  is_reposted: boolean;
+  reposted_post_id: number | null;
+  original_name?: string
+  original_user_id?: number
 }
 
 const accountId = Astro.cookies.get("accountId");

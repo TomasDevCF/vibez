@@ -35,52 +35,67 @@ const FollowersCount = db
   .groupBy(Follows.followed_id)
   .as('FollowersCount');
 
-// En vez de hacer una subconsulta, hacemos el left join directamente en la consulta principal
-const postFromFolloweds = await db
-  .select({
-    post_id: Posts.post_id,
-    user_id: Posts.user_id,
-    image: Users.image,
-    username: Users.username,
-    name: Users.name,
-    body: Posts.body,
-    created_at: Posts.created_at,
-    likes_count: LikesCount.count,
-    comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
-    images: sql<string | null>`
-      CASE 
-        WHEN count(${Images.image_id}) = 0 THEN NULL
-        ELSE json_group_array(
-          json_object('image_id', ${Images.image_id}, 'post_id', ${Images.post_id}, 'image_url', ${Images.image_url})
-        )
-      END
-    `.as('images'),
-  })
-  .from(Posts)
-  .leftJoin(Users, eq(Posts.user_id, Users.user_id))
-  .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
-  .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
-  .leftJoin(Images, eq(Posts.post_id, Images.post_id))
-  .where(
-    and(
-      exists(
-        db
-          .select()
-          .from(Follows)
-          .where(and(eq(Follows.followed_id, Users.user_id), eq(Follows.follower_id, userId)))
-      ),
-      notExists(
-        db
-          .select()
-          .from(Likes)
-          .where(and(eq(Likes.post_id, Posts.post_id), eq(Likes.user_id, userId)))
-      ),
-      or(eq(Posts.is_comment, false), isNull(Posts.is_comment))
+
+  const RepostedPost = alias(Posts, "RepostedPost");
+
+  const postFromFolloweds = await db
+    .select({
+      post_id: Posts.post_id,
+      user_id: Posts.user_id,
+      image: Users.image,
+      username: Users.username,
+      name: Users.name,
+      body: Posts.body,
+      created_at: Posts.created_at,
+      likes_count: LikesCount.count,
+      comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
+      images: sql<string | null>`
+        CASE 
+          WHEN count(${Images.image_id}) = 0 THEN NULL
+          ELSE json_group_array(
+            json_object('image_id', ${Images.image_id}, 'post_id', ${Images.post_id}, 'image_url', ${Images.image_url})
+          )
+        END
+      `.as('images'),
+      is_reposted: sql<boolean>`
+        CASE 
+          WHEN ${Posts.reposted_post_id} IS NOT NULL THEN true 
+          ELSE false 
+        END
+      `.as('is_reposted'),
+      reposted_post_id: sql<string>`
+        CASE
+          WHEN ${RepostedPost.post_id} IS NOT NULL THEN ${RepostedPost.user_id}
+          ELSE null
+        END
+      `.as('reposted_post_id'),
+    })
+    .from(Posts)
+    .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+    .leftJoin(RepostedPost, eq(Posts.reposted_post_id, RepostedPost.post_id))
+    .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
+    .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
+    .leftJoin(Images, eq(Posts.post_id, Images.post_id))
+    .where(
+      and(
+        exists(
+          db
+            .select()
+            .from(Follows)
+            .where(and(eq(Follows.followed_id, Users.user_id), eq(Follows.follower_id, userId)))
+        ),
+        notExists(
+          db
+            .select()
+            .from(Likes)
+            .where(and(eq(Likes.post_id, Posts.post_id), eq(Likes.user_id, userId)))
+        ),
+        or(eq(Posts.is_comment, false), isNull(Posts.is_comment))
+      )
     )
-  )
-  .groupBy(Posts.post_id, Posts.user_id)
-  .limit(6)
-  .offset(6 * page);
+    .groupBy(Posts.post_id, Posts.user_id, RepostedPost.post_id)
+    .limit(6)
+    .offset(6 * page);
 
   if (postFromFolloweds.length === 0) {
     const posts = await db.select({
@@ -102,9 +117,22 @@ const postFromFolloweds = await db
         )
       END
     `.as('images'),
-    })
-    .from(Posts)
-    .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+    is_reposted: sql<boolean>`
+      CASE 
+        WHEN ${Posts.reposted_post_id} IS NOT NULL THEN true 
+        ELSE false 
+      END
+    `.as('is_reposted'),
+    reposted_post_id: sql<number>`
+      CASE
+        WHEN ${RepostedPost.post_id} IS NOT NULL THEN ${RepostedPost.user_id}
+        ELSE null
+      END
+    `.as('reposted_post_id'),
+  })
+  .from(Posts)
+  .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+  .leftJoin(RepostedPost, eq(Posts.reposted_post_id, RepostedPost.post_id))
     .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
     .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
     .leftJoin(FollowersCount, eq(Users.user_id, FollowersCount.user_id))
@@ -150,16 +178,29 @@ const postFromFolloweds = await db
       likes_count: LikesCount.count,
       comments_count: sql<number>`count(DISTINCT ${CommentsAlias.post_id})`,
       images: sql<string | null>`
+        CASE 
+          WHEN count(${Images.image_id}) = 0 THEN NULL
+          ELSE json_group_array(
+            json_object('image_id', ${Images.image_id}, 'post_id', ${Images.post_id}, 'image_url', ${Images.image_url})
+          )
+        END
+      `.as('images'),
+      is_reposted: sql<boolean>`
       CASE 
-        WHEN count(${Images.image_id}) = 0 THEN NULL
-        ELSE json_group_array(
-          json_object('image_id', ${Images.image_id}, 'post_id', ${Images.post_id}, 'image_url', ${Images.image_url})
-        )
+        WHEN ${Posts.reposted_post_id} IS NOT NULL THEN true 
+        ELSE false 
       END
-    `.as('images'),
-    })
-    .from(Posts)
-    .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+    `.as('is_reposted'),
+    reposted_post_id: sql<number>`
+      CASE
+        WHEN ${RepostedPost.post_id} IS NOT NULL THEN ${RepostedPost.user_id}
+        ELSE null
+      END
+    `.as('reposted_post_id'),
+  })
+  .from(Posts)
+  .leftJoin(Users, eq(Posts.user_id, Users.user_id))
+  .leftJoin(RepostedPost, eq(Posts.reposted_post_id, RepostedPost.post_id))
     .leftJoin(LikesCount, eq(Posts.post_id, LikesCount.post_id))
     .leftJoin(CommentsAlias, eq(Posts.post_id, CommentsAlias.commented_post_id))
     .leftJoin(FollowersCount, eq(Users.user_id, FollowersCount.user_id))

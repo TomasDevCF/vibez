@@ -11,14 +11,16 @@ export default function ForYou() {
   const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
+    console.log("primer load")
     fetch(`/api/posts/forYou/${Cookies.get("accountId")}`)
       .then(res => res.json())
       .then(posts => {
-        setPosts(prevPosts => [...prevPosts, ...posts])
+        setPosts([...posts])
       })
   }, [])
 
   function handleLoadMore() {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     fetch(`/api/posts/forYou/${Cookies.get("accountId")}?page=${page + 1}`)
       .then(res => res.json())
       .then(posts => {
