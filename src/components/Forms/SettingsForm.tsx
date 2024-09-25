@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react"
-import type { UserInfo } from "../layouts/HomePage.astro"
-import FormInput from "./FormInput"
+import type { UserInfo } from "../../layouts/HomePage.astro"
+import FormInput from "./Inputs/FormInput.astro"
 import Cookies from "js-cookie"
 
 interface Props {

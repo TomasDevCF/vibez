@@ -1,5 +1,5 @@
 import type { ChangeEvent, Dispatch, SetStateAction } from "react";
-import type { Image } from "./PostInput";
+import type { Image } from "../Inputs/PostInput";
 
 interface Props {
   setImages: Dispatch<SetStateAction<Image[] | null>>

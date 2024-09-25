@@ -1,0 +1,32 @@
+---
+interface Props {
+  type: "text" | "password" | "date" | "email";
+  id: string;
+  disabled?: boolean;
+  value?: string;
+  placeholder: string;
+  required?: boolean;
+}
+
+const { type, id, disabled, value, placeholder, required }: Props = Astro.props;
+---
+
+<div class="relative w-full">
+  <div
+    class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+  >
+    <slot />
+  </div>
+  <input
+    required={required !== undefined ? required : true}
+    type={type}
+    id={id}
+    readonly={disabled}
+    value={value}
+    name={id}
+    minlength={id === "name" || id === "username" ? 5 : 0}
+    maxlength={id === "name" || id === "username" ? 18 : 100}
+    class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 focus:bg-white/10 bg-white/10 border-white/20 placeholder-gray-400 text-gray-200 focus:outline-none disabled:bg-white/20 disabled:text-gray-400 disabled:placeholder-gray-400 read-only:bg-white/20 read-only:text-gray-400 read-only:placeholder-gray-400 autofill:bg-white/10"
+    placeholder={placeholder}
+  />
+</div>

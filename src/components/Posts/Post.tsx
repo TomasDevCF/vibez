@@ -5,7 +5,7 @@ import Cookies from "js-cookie"
 interface Props {
   post: Post
   className?: string
-  setPosts: Dispatch<SetStateAction<Post[]>>,
+  setPosts?: Dispatch<SetStateAction<Post[]>>,
 }
 
 export function hoursSince(date: Date): string {
@@ -78,7 +78,7 @@ export default function Post({ post, className, setPosts }: Props) {
 
   useEffect(() => {
     console.log(post)
-    if (post.is_reposted) {
+    if (post.is_reposted && setPosts) {
       fetch(`/api/posts/getPost&Comment/${post.reposted_post_id}`)
         .then(res => res.json())
         .then(data => {
@@ -198,9 +198,13 @@ export default function Post({ post, className, setPosts }: Props) {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setPosts(prevPosts => {
-            return prevPosts.filter((value) => value.post_id != post.post_id)
-          })
+          if (setPosts) {
+            setPosts(prevPosts => {
+              return prevPosts.filter((value) => value.post_id != post.post_id)
+            })
+          } else {
+            return window.location.reload()
+          }
           //TODO ALERTA POST BORRADO
         }
       })
@@ -223,7 +227,11 @@ export default function Post({ post, className, setPosts }: Props) {
       .then(res => res.json())
       .then(data => {
         if (data.post) {
-          setPosts(prevPosts => [data.post[0], ...prevPosts])
+          if (setPosts) {
+            setPosts(prevPosts => [data.post[0], ...prevPosts])
+          }
+
+          //TODO ALERTA POST REPOSTEADO
         }
       })
   }

@@ -4,8 +4,8 @@ import Layout from "../../layouts/Layout.astro";
 import { Users } from "astro:db";
 import { eq } from "astro:db";
 import HomePage from "../../layouts/HomePage.astro";
-import UserHeader from "../../components/UserHeader.astro";
-import UserPosts from "../../components/UserPosts";
+import UserHeader from "../../components/Users/UserHeader.astro";
+import UserPosts from "../../components/Users/UserPosts";
 
 const { user_id } = Astro.params;
 const accountId = Astro.cookies.get("accountId");

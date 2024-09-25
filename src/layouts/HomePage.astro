@@ -1,9 +1,9 @@
 ---
 import { db } from "astro:db";
 import { Users } from "astro:db";
-import AsideNav from "../components/AsideNav.astro";
+import AsideNav from "../components/HomePageComponents/AsideNav.astro";
 import { eq } from "astro:db";
-import SearchAside from "../components/SearchAside.astro";
+import SearchAside from "../components/HomePageComponents/SearchAside.astro";
 
 export interface ImageUrl {
   image_url: string;
@@ -38,8 +38,8 @@ export interface Post {
   images: string | null;
   is_reposted: boolean;
   reposted_post_id: number | null;
-  original_name?: string
-  original_user_id?: number
+  original_name?: string;
+  original_user_id?: number;
 }
 
 const accountId = Astro.cookies.get("accountId");

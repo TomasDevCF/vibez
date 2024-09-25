@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Post, UserInfo } from "../layouts/HomePage.astro";
 import Cookies from "js-cookie"
 import CPost from "./Post";
-import PostInput from "./PostInput";
+import PostInput from "../Inputs/PostInput";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function ForYou() {

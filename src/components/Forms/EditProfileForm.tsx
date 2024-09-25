@@ -1,6 +1,6 @@
 import { useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent, type SetStateAction } from "react"
-import type { UserInfo } from "../layouts/HomePage.astro"
-import FormInput from "./FormInput"
+import type { UserInfo } from "../../layouts/HomePage.astro"
+import FormInput from "../Inputs/FormInput.astro"
 
 interface Props {
   editProfileGui: boolean

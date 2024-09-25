@@ -1,0 +1,44 @@
+---
+import FollowCardButton from "../Buttons/FollowCardButton";
+
+interface Props {
+  image: string | null;
+  name: string;
+  username: string;
+  userId: number;
+  followButton?: boolean;
+}
+
+const {
+  username,
+  image,
+  name,
+  userId,
+  followButton = true,
+}: Props = Astro.props;
+const accountId = Astro.cookies.get("accountId");
+---
+
+<a
+  href={`/user/${userId != undefined ? userId : accountId}`}
+  class="flex items-center gap-2 py-2 hover:bg-white/5 transition-colors px-2 rounded-md"
+>
+  <div class="flex-shrink-0">
+    <img
+      class="w-8 h-8 rounded-full object-cover bg-black"
+      src={image
+        ? image
+        : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`}
+      alt={name}
+    />
+  </div>
+  <div class="flex-auto min-w-0">
+    <p class="text-sm font-medium rubik truncate text-white">
+      {name}
+    </p>
+    <p class="text-sm truncate rubik text-gray-400">
+      @{username}
+    </p>
+  </div>
+  <FollowCardButton userId={userId} followButton={followButton} />
+</a>

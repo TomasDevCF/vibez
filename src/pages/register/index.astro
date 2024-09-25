@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { SignIn } from "auth-astro/components";
 import { getSession } from "auth-astro/server";
 import SignForm from "../../layouts/SignForm.tsx";
-import FormInput from "../../components/FormInput.tsx";
+import FormInput from "../../components/Inputs/FormInput.astro";
 
 const session = await getSession(Astro.request);
 const accountId = Astro.cookies.get("accountId");

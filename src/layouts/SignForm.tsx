@@ -3,7 +3,7 @@ import { signOut } from "auth-astro/client";
 import Cookies from "js-cookie"
 import queryString from "query-string"
 import { validateDate, validateEmail } from "./Layout.astro";
-import CommonAuthForm from "../components/CommonAuthForm";
+import CommonAuthForm from "../components/Forms/CommonAuthForm.astro";
 import { verifySession } from "../pages/oauth.astro";
 
 export interface Session {

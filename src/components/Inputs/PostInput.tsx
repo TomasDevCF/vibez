@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type SetStateAction } from "react";
-import type { Post, UserInfo } from "../layouts/HomePage.astro"
+import type { Post, UserInfo } from "../../layouts/HomePage.astro"
 import Cookies from "js-cookie"
-import AddImageButton from "./AddImageButton";
+import AddImageButton from "../Buttons/AddImageButton";
 
 interface Props {
   placeholder: string
@@ -32,6 +32,7 @@ export default function PostInput({ placeholder, setPosts, isCommentInput = fals
 
   function submitPost(imagesToSubmit: Image[] | null, postInfo: any, e: FormEvent<HTMLFormElement>) {
     if (imagesToSubmit) {
+      let images: string[] = []
       for (let i = 0; i < imagesToSubmit.length; i++) {
         const formData = new FormData(e.target as HTMLFormElement)
         formData.append("image", imagesToSubmit[i].file)
@@ -40,20 +41,21 @@ export default function PostInput({ placeholder, setPosts, isCommentInput = fals
           body: formData
         })
           .then(res => res.json())
-          .then(data => {
+          .then(imageData => {
             fetch(`/api/posts/addImage`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                image_url: data.data.url,
+                image_url: imageData.data.url,
                 post_id: postInfo.post[0].post_id
               })
             })
               .then(res => res.json())
               .then(data => {
                 console.log(data)
+                images = [...images, imageData.data.url]
               })
               .catch(err => {
                 console.error(err)
@@ -61,18 +63,21 @@ export default function PostInput({ placeholder, setPosts, isCommentInput = fals
               })
           })
       }
+      setPosts(prevPosts => [{
+        body: postInfo.post[0].body as string,
+        post_id: postInfo.post[0].post_id as number,
+        user_id: postInfo.post[0].user_id as number,
+        created_at: postInfo.post[0].created_at as Date,
+        image: userInfo?.image as string | null,
+        username: userInfo?.username as string,
+        name: userInfo?.name as string,
+        comments_count: 0,
+        likes_count: 0,
+        images: JSON.stringify(images),
+        is_reposted: false,
+        reposted_post_id: null,
+      }, ...prevPosts])
     }
-    setPosts(prevPosts => [{
-      body: postInfo.post[0].body as string,
-      post_id: postInfo.post[0].post_id as number,
-      user_id: postInfo.post[0].user_id as number,
-      created_at: postInfo.post[0].created_at as Date,
-      image: userInfo?.image as string | null,
-      username: userInfo?.username as string,
-      name: userInfo?.name as string,
-      comments_count: 0,
-      likes_count: 0,
-    }, ...prevPosts])
     setImages(null)
   }
 

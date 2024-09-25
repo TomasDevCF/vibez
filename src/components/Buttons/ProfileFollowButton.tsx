@@ -1,8 +1,8 @@
 import Cookies from "js-cookie"
-import type { UserInfo } from "../layouts/HomePage.astro"
+import type { UserInfo } from "../../layouts/HomePage.astro"
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react"
-import FormInput from "./FormInput"
-import EditProfileForm from "./EditProfileForm"
+import FormInput from "../Inputs/FormInput.astro"
+import EditProfileForm from "../Forms/EditProfileForm"
 
 interface Props {
   userInfo: UserInfo

@@ -1,8 +1,8 @@
 import { signOut } from "auth-astro/client";
 import { useEffect } from "react";
 import Cookies from "js-cookie"
-import { verifySession } from "../pages/oauth.astro";
-import type { Session } from "../layouts/SignForm";
+import { verifySession } from "../../pages/oauth.astro";
+import type { Session } from "../../layouts/SignForm";
 
 interface Props {
   session?: Session

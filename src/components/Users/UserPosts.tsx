@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import type { Post } from "../layouts/HomePage.astro"
+import type { Post } from "../../layouts/HomePage.astro"
 import InfiniteScroll from "react-infinite-scroll-component"
-import CPost from "./Post";
+import CPost from "../Posts/Post.tsx";
 import queryString from "query-string";
 interface Props {
   userId: number

@@ -1,15 +1,12 @@
-import { useState, type MouseEvent } from "react";
+import { useState, type MouseEvent } from "react"
 import Cookies from "js-cookie"
 
 interface Props {
-  image: string | null;
-  name: string;
-  username: string
-  userId: number
+  userId: number,
   followButton?: boolean
 }
 
-export default function UserCard({ username, image, name, userId, followButton = true }: Props) {
+export default function FollowCardButton({ userId, followButton = true }: Props) {
   const [isFollowed, setIsFollowed] = useState<boolean>(false)
 
   function handleClick(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
@@ -35,21 +32,8 @@ export default function UserCard({ username, image, name, userId, followButton =
       })
   }
 
-  console.log(`/user/${userId != undefined ? userId : Cookies.get("accountId")}`)
-
   return (
-    <a href={`/user/${userId != undefined ? userId : Cookies.get("accountId")}`} className="flex items-center gap-2 py-2 hover:bg-white/5 transition-colors px-2 rounded-md">
-      <div className="flex-shrink-0">
-        <img className="w-8 h-8 rounded-full object-cover bg-black" src={image ? image : `https://ui-avatars.com/api/?name=${name.charAt(0)}&background=random&bold=true`} alt={name} />
-      </div>
-      <div className="flex-auto min-w-0">
-        <p className="text-sm font-medium rubik truncate text-white">
-          {name}
-        </p>
-        <p className="text-sm truncate rubik text-gray-400">
-          @{username}
-        </p>
-      </div>
+    <>
       {followButton && !isFollowed && <div className="flex-shrink-0">
         <button onClick={handleClick} className="text-white bg-blue-500 hover:bg-blue-600/90 focus:outline-none font-medium rounded-lg text-sm px-2 py-1 text-center items-center w-full">
           <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -58,6 +42,6 @@ export default function UserCard({ username, image, name, userId, followButton =
 
         </button>
       </div>}
-    </a>
+    </>
   )
 }

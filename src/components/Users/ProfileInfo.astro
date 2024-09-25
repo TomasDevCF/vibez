@@ -1,0 +1,62 @@
+---
+import type { UserInfo } from "../../layouts/HomePage.astro";
+import FollowsInfo from "../ProfileInfoComponents/FollowsInfo";
+import QueryType from "../ProfileInfoComponents/QueryType";
+import UserDescription from "../ProfileInfoComponents/UserDescription";
+
+export function dateToMonth(date: Date): string {
+  const months: string[] = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+
+  const month: string = months[date.getMonth()];
+  const year: number = date.getFullYear();
+
+  return `Unido/a en ${month} de ${year}`;
+}
+
+interface Props {
+  userInfo: UserInfo;
+}
+
+const { userInfo } = Astro.props;
+---
+
+<div class="profile-info pt-5">
+  <p class="text-sm rubik font-medium text-white">{userInfo.name}</p>
+  <p class="text-sm rubik text-gray-400">@{userInfo.username}</p>
+  <UserDescription userInfo={userInfo} client:load />
+  <p class="text-white text-xs pt-2 font-light text-wrap flex gap-1">
+    <svg
+      class="w-4 h-4 text-gray-800 dark:text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"
+      ></path>
+    </svg>
+    {dateToMonth(userInfo.created_at)}
+  </p>
+  <FollowsInfo userInfo={userInfo} client:load />
+  <QueryType userInfo={userInfo} client:load />
+</div>

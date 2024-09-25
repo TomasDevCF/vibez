@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { Post } from "../layouts/HomePage.astro"
 import CPost from "./Post"
-import PostInput from "./PostInput"
+import PostInput from "../Inputs/PostInput"
 
 interface Props {
   post_id: number

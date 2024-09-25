@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { getSession } from "auth-astro/server";
 import SignForm from "../../layouts/SignForm.tsx";
-import FormInput from "../../components/FormInput.tsx";
+import FormInput from "../../components/Inputs/FormInput.astro";
 import { verifySession } from "../oauth.astro";
 import { signOut } from "auth-astro/client";
 const session = await getSession(Astro.request);
